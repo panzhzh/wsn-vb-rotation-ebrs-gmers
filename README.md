@@ -1,252 +1,252 @@
-# GMERS: 无线传感网络能源高效连通支配集算法
+# GMERS: Energy-Efficient Connected Dominating Set Algorithm for Wireless Sensor Networks
 
-## 项目简介
+## Project Overview
 
-本项目实现了 GMERS（贪心最小能量比率选择）算法，用于无线传感网络中的连通支配集(CDS)构建。通过在能源消耗和覆盖率之间找到最优平衡，实现显著延长网络寿命的目标。
+This project implements the GMERS (Greedy Minimum Energy Ratio Selection) algorithm for constructing Connected Dominating Sets (CDS) in wireless sensor networks. By finding an optimal balance between energy consumption and coverage rate, it significantly extends network lifetime.
 
-### 核心创新
-- **Alpha参数权衡机制**：通过α∈[0,1]参数平衡能源效率（能量权重）和覆盖性能（邻域度数）
-- **贪心选择策略**：动态计算节点的能源比率，优先选择能源充足的节点
-- **连通性保证**：确保CDS构建过程中网络始终保持连通
+### Key Innovations
+- **Alpha Parameter Balancing Mechanism**: The α∈[0,1] parameter balances energy efficiency (energy weight) and coverage performance (neighborhood degree)
+- **Greedy Selection Strategy**: Dynamically computes node energy ratios and prioritizes nodes with sufficient energy
+- **Connectivity Guarantee**: Ensures the network remains connected throughout the CDS construction process
 
-## 目录结构
+## Directory Structure
 
 ```
 cecs/
-├── energy/                       核心实验代码目录
-│   ├── 源代码
-│   │   ├── graph.hpp            图数据结构定义
-│   │   ├── graphgene.cpp        图生成程序（两种模式）
-│   │   ├── simulations.cpp      主实验执行器 (Ex1-Ex7)
-│   │   ├── simulations_supplement.cpp  补充实验执行器 (4个)
-│   │   └── decideab.cpp         Ex0-Alpha实验 (alpha扫描)
+├── energy/                       Core experiment code directory
+│   ├── Source Code
+│   │   ├── graph.hpp            Graph data structure definition
+│   │   ├── graphgene.cpp        Graph generation program (two modes)
+│   │   ├── simulations.cpp      Main experiment executor (Ex1-Ex7)
+│   │   ├── simulations_supplement.cpp  Supplementary experiment executor (4 experiments)
+│   │   └── decideab.cpp         Ex0-Alpha experiment (alpha scanning)
 │   │
-│   ├── 执行脚本
-│   │   ├── run_experiments.sh   一键执行所有实验
-│   │   └── run_supplement.sh    执行补充实验
+│   ├── Execution Scripts
+│   │   ├── run_experiments.sh   One-click run all experiments
+│   │   └── run_supplement.sh    Run supplementary experiments
 │   │
-│   ├── 绘图脚本
-│   │   ├── plot.py              主实验绘图
-│   │   └── plot_all_supplement.py  补充实验绘图
+│   ├── Plotting Scripts
+│   │   ├── plot.py              Main experiment plotting
+│   │   └── plot_all_supplement.py  Supplementary experiment plotting
 │   │
-│   ├── 数据
-│   │   ├── smaller/             原始图数据（小度数）
-│   │   ├── equal/               原始图数据（中度数）
-│   │   ├── greater/             原始图数据（大度数）
-│   │   └── output/              生成结果输出
-│   │       ├── graphs/          生成的图文件
-│   │       ├── ex0_alpha/       Ex0-Alpha结果
-│   │       ├── ex1-ex7/         主实验结果
-│   │       └── exX/             补充实验结果
+│   ├── Data
+│   │   ├── smaller/             Graph data (small degree)
+│   │   ├── equal/               Graph data (medium degree)
+│   │   ├── greater/             Graph data (large degree)
+│   │   └── output/              Generated results output
+│   │       ├── graphs/          Generated graph files
+│   │       ├── ex0_alpha/       Ex0-Alpha results
+│   │       ├── ex1-ex7/         Main experiment results
+│   │       └── exX/             Supplementary experiment results
 │   │
-│   └── 文档
-│       └── README.md            详细使用说明
+│   └── Documentation
+│       └── README.md            Detailed usage guide
 │
-├── docs/                        项目文档
-├── figures/                     生成的图表
-├── tables/                      导出的CSV数据
-└── README.md                    本文件
+├── docs/                        Project documentation
+├── figures/                     Generated plots
+├── tables/                      Exported CSV data
+└── README.md                    This file
 ```
 
-## 实验说明
+## Experiment Description
 
-### Ex0-Alpha: Alpha参数扫描实验
+### Ex0-Alpha: Alpha Parameter Scanning Experiment
 
-**目标**：验证α参数对网络寿命的影响，找到最优的权衡点
+**Objective**: Verify the impact of α parameter on network lifetime and find the optimal trade-off point
 
-**参数范围**：
-- α ∈ [0.1, 1.0]，步长 0.1
-- 图类型：smaller (度数=N/4), equal (度数=N/2), greater (度数=3N/4)
-- 节点数：N=50, 100
-- 每配置100个样本图
+**Parameter Range**:
+- α ∈ [0.1, 1.0], step 0.1
+- Graph types: smaller (degree=N/4), equal (degree=N/2), greater (degree=3N/4)
+- Number of nodes: N=50, 100
+- 100 sample graphs per configuration
 
-**输出**：
-- 网络寿命(lifetime)随α变化的曲线
-- 支配集大小随α变化的趋势
-- CSV格式的详细数据
+**Output**:
+- Network lifetime curves as α varies
+- Dominating set size trends as α varies
+- Detailed data in CSV format
 
-### Ex1-Ex7: 主论文实验
+### Ex1-Ex7: Main Paper Experiments
 
-**图生成**：单位圆盘随机几何图 (R=250, N=10-100, 每N值100个样本)
+**Graph Generation**: Unit disk random geometric graphs (R=250, N=10-100, 100 samples per N)
 
-**Ex1**：GMERS与传统方法的性能对比
-- 比较寿命、收敛时间、计算开销
+**Ex1**: Performance comparison of GMERS with traditional methods
+- Compare lifetime, convergence time, computational cost
 
-**Ex2**：不同初始能量分配方案的影响
-- 均匀分配 vs 不均匀分配
+**Ex2**: Impact of different initial energy allocation schemes
+- Uniform vs. non-uniform allocation
 
-**Ex3**：网络拓扑对CDS性能的影响
-- 不同节点密度下的表现
+**Ex3**: Impact of network topology on CDS performance
+- Performance under different node densities
 
-**Ex4**：单参数优化
-- α的敏感性分析
+**Ex4**: Single parameter optimization
+- Sensitivity analysis of α
 
-**Ex5**：动态帧序列分析
-- CDS成员的变化过程
+**Ex5**: Dynamic frame sequence analysis
+- CDS member changes over time
 
-**Ex6**：多参数联合优化
-- 多个参数的共同影响
+**Ex6**: Multi-parameter joint optimization
+- Combined effects of multiple parameters
 
-**Ex7**：特定场景优化
-- 能源受限或延迟敏感等场景
+**Ex7**: Scenario-specific optimization
+- Energy-constrained or delay-sensitive scenarios
 
-### 补充实验
+### Supplementary Experiments
 
-**Ex-Alpha-Sweep**：扩展的参数扫描 (α∈[0, 1.2], 展示区间外退化现象)
+**Ex-Alpha-Sweep**: Extended parameter scanning (α∈[0, 1.2], showing out-of-range degradation)
 
-**Ex-Large**：大规模网络可扩展性 (N到300节点)
+**Ex-Large**: Large-scale network scalability (N up to 300 nodes)
 
-**Ex-CDS-Stability**：CDS稳定性分析
-- Jaccard相似度 (J_t)
-- 成员变化率 (τ_t)
+**Ex-CDS-Stability**: CDS stability analysis
+- Jaccard similarity (J_t)
+- Member change rate (τ_t)
 
-**Ex-Energy-Model**：不同能量分布模型对比
-- Exponential (指数分布)
-- Gamma (伽马分布)
-- Lognormal (对数正态分布)
-- Weibull (韦布尔分布)
+**Ex-Energy-Model**: Comparison of different energy distribution models
+- Exponential distribution
+- Gamma distribution
+- Lognormal distribution
+- Weibull distribution
 
-## 快速开始
+## Quick Start
 
-### 执行全部实验
+### Run All Experiments
 
 ```bash
 cd energy/
 bash run_experiments.sh
 ```
 
-该脚本自动执行：
-1. **编译检查**：确保所有可执行文件已编译
-2. **目录创建**：建立输出目录结构
-3. **图生成**：Mode 1 (主实验用) 和 Mode 2 (Ex0-Alpha用)
-4. **Ex0-Alpha执行**：α参数扫描实验
-5. **主实验执行**：Ex1-Ex7全部实验
-6. **结果验证**：检查输出文件完整性
+This script automatically executes:
+1. **Compilation Check**: Ensure all executable files are compiled
+2. **Directory Creation**: Build output directory structure
+3. **Graph Generation**: Mode 1 (for main experiments) and Mode 2 (for Ex0-Alpha)
+4. **Ex0-Alpha Execution**: α parameter scanning experiment
+5. **Main Experiments**: All Ex1-Ex7 experiments
+6. **Results Verification**: Check output file completeness
 
-预计耗时：**2-3小时**（使用多核CPU）
+Estimated Time: **2-3 hours** (using multi-core CPU)
 
-### 执行补充实验
+### Run Supplementary Experiments
 
 ```bash
 cd energy/
 bash run_supplement.sh
 ```
 
-单独执行某个补充实验：
+Run a specific supplementary experiment:
 ```bash
 export OMP_NUM_THREADS=16
-./simulations_supplement.exe alpha_sweep    # 或 large, stability, energy_model
+./simulations_supplement.exe alpha_sweep    # or large, stability, energy_model
 ```
 
-## 输出说明
+## Output Description
 
-### 图表文件 (figures/)
+### Plot Files (figures/)
 
-| 文件 | 来源 | 内容 |
-|------|------|------|
-| figure1.png - figure7.png | Ex1-Ex7 | 主实验结果曲线 |
-| figure3_alpha_scan.png | Ex0-Alpha | Alpha扫描曲线 |
-| supplement/*.png | 补充实验 | 补充实验图表 |
+| File | Source | Content |
+|------|--------|---------|
+| figure1.png - figure7.png | Ex1-Ex7 | Main experiment result curves |
+| figure3_alpha_scan.png | Ex0-Alpha | Alpha scanning curves |
+| supplement/*.png | Supplementary experiments | Supplementary experiment plots |
 
-### 数据文件 (tables/)
+### Data Files (tables/)
 
-| 文件 | 来源 | 格式 |
-|------|------|------|
-| *.csv | 补充实验 | CSV格式数据 |
-| README.md | 数据说明 | 字段解释文档 |
+| File | Source | Format |
+|------|--------|--------|
+| *.csv | Supplementary experiments | CSV format data |
+| README.md | Data description | Field explanation document |
 
-### 实验结果 (output/)
+### Experiment Results (output/)
 
-| 目录 | 内容 |
-|------|------|
-| graphs/ | 生成的拓扑图文件 |
-| ex0_alpha/ | Ex0-Alpha原始输出 |
-| ex1-ex7/ | 主实验原始输出 |
-| exX/ | 补充实验原始输出 |
+| Directory | Content |
+|-----------|---------|
+| graphs/ | Generated topology graph files |
+| ex0_alpha/ | Ex0-Alpha raw output |
+| ex1-ex7/ | Main experiment raw output |
+| exX/ | Supplementary experiment raw output |
 
-## 参数配置
+## Parameter Configuration
 
-### OpenMP线程数设置
+### OpenMP Thread Count Setting
 
 ```bash
-# 主实验：使用所有CPU核心
+# Main experiments: Use all CPU cores
 export OMP_NUM_THREADS=$(nproc)
 ./simulations.exe
 
-# Ex0-Alpha：推荐16线程
+# Ex0-Alpha: Recommend 16 threads
 export OMP_NUM_THREADS=16
 ./decideab.exe
 
-# 补充实验：推荐16线程
+# Supplementary experiments: Recommend 16 threads
 export OMP_NUM_THREADS=16
 ./simulations_supplement.exe all
 ```
 
-### 实验参数修改
+### Experiment Parameter Modification
 
-在源代码中修改：
+Modify in source code:
 
-**graphgene.cpp**：
-- `degree = N/4, N/2, N*3/4` 修改度数比例
-- `r = 250` 修改通信半径
+**graphgene.cpp**:
+- `degree = N/4, N/2, N*3/4` modify degree ratio
+- `r = 250` modify communication radius
 
-**decideab.cpp**：
-- `for(double a = 0.1; a <= 1.0; a += 0.1)` 修改α范围和步长
-- `N=50, 100` 修改测试节点数
+**decideab.cpp**:
+- `for(double a = 0.1; a <= 1.0; a += 0.1)` modify α range and step size
+- `N=50, 100` modify test node counts
 
-**simulations_supplement.cpp**：
-- 修改各补充实验的参数范围
+**simulations_supplement.cpp**:
+- Modify parameter ranges for each supplementary experiment
 
-## 系统要求
+## System Requirements
 
-### 编译环境
-- **C++标准**：C++17 或更高
-- **编译器**：g++ 7.0+ 或 clang++ 5.0+
-- **OpenMP**：支持并行计算
+### Compilation Environment
+- **C++ Standard**: C++17 or higher
+- **Compiler**: g++ 7.0+ or clang++ 5.0+
+- **OpenMP**: Parallel computing support
 
-### 系统环境
-- **内存**：至少 2GB
-- **硬盘**：至少 10GB（用于输出结果）
-- **CPU**：多核处理器（推荐4核以上）
+### System Environment
+- **Memory**: At least 2GB
+- **Disk**: At least 10GB (for output results)
+- **CPU**: Multi-core processor (4 cores or more recommended)
 
-### 依赖库
-- 标准C++库（自带）
-- OpenMP（大多数编译器自带）
+### Dependencies
+- Standard C++ library (built-in)
+- OpenMP (built-in with most compilers)
 
-## 编译命令
+## Compilation Commands
 
 ```bash
-# 单独编译
+# Individual compilation
 g++ -o graphgene.exe graphgene.cpp -std=c++17
 g++ -o simulations.exe simulations.cpp -std=c++17 -fopenmp
 g++ -o decideab.exe decideab.cpp -std=c++17
 g++ -o simulations_supplement.exe simulations_supplement.cpp -std=c++17 -fopenmp
 
-# 或使用脚本自动编译
+# Or use script for automatic compilation
 bash run_experiments.sh
 ```
 
-## 常见问题
+## FAQ
 
-**Q: 为什么Ex0-Alpha的结果和论文图表不完全一致？**
-A: 这通常是由于随机数生成器或图拓扑的细微差异导致。确保使用原始的图数据文件。
+**Q: Why are the Ex0-Alpha results not exactly consistent with the paper figures?**
+A: This is usually due to minor differences in random number generation or graph topology. Ensure you use the original graph data files.
 
-**Q: 程序运行很慢，如何加速？**
-A: 增加 OMP_NUM_THREADS 值（不超过CPU核心数）或减少样本数量。
+**Q: The program runs slowly. How to speed it up?**
+A: Increase OMP_NUM_THREADS value (not exceeding CPU core count) or reduce sample size.
 
-**Q: 如何只运行某个特定的实验？**
-A: 直接运行对应的可执行文件，例如 `./decideab.exe` 或 `./simulations_supplement.exe alpha_sweep`
+**Q: How to run only a specific experiment?**
+A: Run the corresponding executable directly, e.g., `./decideab.exe` or `./simulations_supplement.exe alpha_sweep`
 
-## 详细文档
+## Detailed Documentation
 
-- 参数说明：见 `energy/README.md`
-- 算法伪代码：见 `docs/` 目录
-- 数据格式：见 `tables/README.md`
+- Parameter details: see `energy/README.md`
+- Algorithm pseudocode: see `docs/` directory
+- Data format: see `tables/README.md`
 
-## 论文引用
+## Paper Citation
 
-如果使用本项目，请引用对应的学术论文。详见项目文档。
+If using this project, please cite the corresponding academic paper. See project documentation for details.
 
-## 许可证
+## License
 
-研究用途使用
+Research use only

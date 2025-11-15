@@ -1,121 +1,118 @@
-## 0. 公共设置（复现实验基线）
+## 0. Common Settings (Reproduce Experiment Baseline)
 
-* 拓扑：每个配置下 **100 个随机种子**；节点均匀独立散布。固定一套 `seeds.txt` 全算法共用。
-* 两个密度情景：
-
-  * **同域增密**：500×500 m²，N∈{50,100,150,200,250,300}。
-  * **等密度扩域**：固定期望度（按 r 与面积成比例放大边长）。
-* 通信半径：r∈{75,100,125} m（默认 100）。
-* α 扫描：α∈{0,0.1,…,1.2}（默认 0.7，保留区间外点展示退化）。
-* 能耗模型：
-
-  * 固定：Mod-F；
-  * 随机：**Exp**（基准）、**Gamma(k∈{0.5,1,2,5})**、**Lognormal(σ∈{0.25,0.5,1.0})**、**Weibull(k∈{0.8,1,2})**、**截断均匀**；均做 **E[c]=1 对齐**，用方差变化检验稳健性。
-* 统一指标：
-
-  * **寿命**（首个节点能量耗尽帧数）；
-  * **CDS大小**：(|C_t|) 及均值±95%CI；
-  * **稳定性**：(J_t=\frac{|C_t∩C_{t-1}|}{|C_t∪C_{t-1}|})、(\tau_t=\frac{|C_t\triangle C_{t-1}|}{|C_{t-1}|})、更新频率与节点进入/退出次数 CDF；
-  * **延迟代理**：平均到汇聚跳数；VB 路径 vs 最短路 **stretch**；
-  * **能量均衡**：Var/Std/CV、Gini、P90–P10；
-  * **控制开销**：每帧控制包条数/字节与能耗占比；
-  * **运行时**：每帧构网时间（ms）。
-* 统计与展示：均值±95%CI；关键比较给 U 检验 p 值标注。
+* Topology: **100 random seeds** per configuration; nodes uniformly independently distributed. Fixed set of `seeds.txt` shared by all algorithms.
+* Two density scenarios:
+  * **Same-domain increasing density**: 500×500 m², N∈{50,100,150,200,250,300}.
+  * **Equal-density expanding domain**: Fixed expected degree (proportionally expand domain size based on r).
+* Communication radius: r∈{75,100,125} m (default 100).
+* α scanning: α∈{0,0.1,…,1.2} (default 0.7, retain out-of-range points to show degradation).
+* Energy consumption model:
+  * Fixed: Mod-F;
+  * Stochastic: **Exp** (baseline), **Gamma(k∈{0.5,1,2,5})**, **Lognormal(σ∈{0.25,0.5,1.0})**, **Weibull(k∈{0.8,1,2})**, **Truncated uniform**; all do **E[c]=1 alignment**, use variance variation to verify robustness.
+* Unified metrics:
+  * **Network Lifetime** (frame count until first node runs out of energy);
+  * **CDS Size**: |C_t| and mean±95% CI;
+  * **Stability**: J_t=|C_t∩C_{t-1}|/|C_t∪C_{t-1}|, τ_t=|C_t△C_{t-1}|/|C_{t-1}|, update frequency and node entry/exit count CDF;
+  * **Latency Proxy**: average hops to sink; VB path vs shortest path **stretch**;
+  * **Energy Balance**: Var/Std/CV, Gini, P90–P10;
+  * **Control Overhead**: control packet count/bytes per frame and proportion of energy consumption;
+  * **Runtime**: network building time per frame (ms).
+* Statistics and presentation: mean±95% CI; key comparisons annotated with U-test p-value.
 
 ---
 
-## Ex-Large（⭐⭐⭐⭐⭐，5–8h）
+## Ex-Large (⭐⭐⭐⭐⭐, 5–8h)
 
-**目标**：回应 R4 的可扩展性与致密网络表现。
-**因素/水平**：N∈{50,100,150,200,250,300} × r∈{75,100,125}；两种密度情景各跑一遍。
-**输出**：
+**Objective**: Respond to R4's scalability and dense network performance.
+**Factors/Levels**: N∈{50,100,150,200,250,300} × r∈{75,100,125}; run both density scenarios.
+**Output**:
 
-* Fig-L1：寿命 vs N（两情景并列）。
-* Fig-L2：构网运行时 vs N（算法可扩展性）。
-* Fig-L3：控制开销占比 vs N（箱线图）。
-* Fig-L4：CDS大小与稳定性（Jaccard 均值）随 N 的双轴图。
-  **成功判据**：在 N≥200 时，方法寿命与稳定性不劣于对照，且运行时增长次线性/线性可接受；控制开销<~5–10%。
-
----
-
-## Ex-CDS-Stability（⭐⭐⭐⭐⭐，3–5h）
-
-**目标**：直接、量化地给出“旋转稳定性”（R2）。
-**计算**：逐帧导出 (C_t)，计算 (J_t,\ \tau_t)，并给总体稳定性 (S=\frac{1}{T-1}\sum_{t>1}J_t)。
-**输出**：
-
-* Fig-S1：(J_t) 与 (\tau_t) 随时间（均值±CI）。
-* Fig-S2：(S) 随 N 与 α 的热力图。
-* Fig-S3：节点进入/退出次数 CDF。
-  **成功判据**：在中高密度或大规模下，方法的 (S) 显著高于基线，(\tau) 显著更低。
+* Fig-L1: Network lifetime vs N (two scenarios side by side).
+* Fig-L2: Network building runtime vs N (algorithm scalability).
+* Fig-L3: Control overhead proportion vs N (box plots).
+* Fig-L4: CDS size and stability (Jaccard mean) vs N dual-axis plot.
+  **Success Criterion**: At N≥200, method lifetime and stability not inferior to baseline, runtime growth sub-linear/linear acceptable; control overhead <~5–10%.
 
 ---
 
-## Ex-Alpha-Sweep（⭐⭐⭐⭐，10–15h）
+## Ex-CDS-Stability (⭐⭐⭐⭐⭐, 3–5h)
 
-**目标**：系统刻画 α 对“寿命—CDS—稳定性—延迟—均衡”的多目标权衡，并展示区间外退化。
-**因素/水平**：α∈{0,0.1,…,1.2}，N∈{100,200}，Mod-F 与 Mod-R(Exp)。
-**输出**：
+**Objective**: Directly and quantitatively provide "rotation stability" (R2).
+**Computation**: Export C_t frame by frame, compute J_t, τ_t, and overall stability S=1/(T-1)∑_{t>1}J_t.
+**Output**:
 
-* Fig-A1：五联图（寿命、CDS、稳定性、延迟、均衡）随 α。
-* Fig-A2：CDS大小 vs 延迟散点 + 线性回归（展示权衡）。
-  **成功判据**：给出“推荐 α”区间（如 0.4–0.9）与**区间外退化**的证据（α<0.1：CDS 过大；α>1：覆盖不足/性能降）。
-
----
-
-## Ex-Energy-Model（⭐⭐⭐，2–3h）
-
-**目标**：验证随机能耗模型选择的合理性与稳健性（R3）。
-**因素/水平**：分布∈{Exp, Gamma, Lognormal, Weibull, Uniform-trunc}，方差从低到高（均值固定为1）。
-**输出**：
-
-* Fig-E1：各分布×方差下的寿命与稳定性箱线图。
-* Fig-E2：能量均衡指标（CV/Gini）对比分布的雷达图或表格。
-  **成功判据**：结论在分布族之间保持一致或差异可解释（如重尾下寿命方差增大但排序稳定）。
+* Fig-S1: J_t and τ_t over time (mean±CI).
+* Fig-S2: S vs N and α heatmap.
+* Fig-S3: Node entry/exit count CDF.
+  **Success Criterion**: At medium-high density or large-scale, method's S significantly higher than baseline, τ significantly lower.
 
 ---
 
-## 低成本增益（可并入上面实验）
+## Ex-Alpha-Sweep (⭐⭐⭐⭐, 10–15h)
 
-* **控制开销实测**：给“控制能耗/总能耗占比”与“控制包条数/字节”曲线。
-* **运行时/复杂度**：每帧构网时间随 N 的曲线，附复杂度讨论。
+**Objective**: Systematically characterize α's multi-objective trade-off on "lifetime–CDS–stability–latency–balance" and show out-of-range degradation.
+**Factors/Levels**: α∈{0,0.1,…,1.2}, N∈{100,200}, Mod-F and Mod-R(Exp).
+**Output**:
+
+* Fig-A1: Five-panel plot (lifetime, CDS, stability, latency, balance) vs α.
+* Fig-A2: CDS size vs latency scatter + linear regression (show trade-off).
+  **Success Criterion**: Provide "recommended α" interval (e.g., 0.4–0.9) and evidence of **out-of-range degradation** (α<0.1: CDS too large; α>1: coverage insufficient/performance drop).
 
 ---
 
-## 代码改动要点（对应你第6节）
+## Ex-Energy-Model (⭐⭐⭐, 2–3h)
+
+**Objective**: Verify the reasonableness and robustness of stochastic energy consumption model selection (R3).
+**Factors/Levels**: Distribution∈{Exp, Gamma, Lognormal, Weibull, Uniform-trunc}, variance from low to high (mean fixed at 1).
+**Output**:
+
+* Fig-E1: Box plots of lifetime and stability across distributions×variances.
+* Fig-E2: Energy balance metrics (CV/Gini) comparison across distributions as radar plot or table.
+  **Success Criterion**: Conclusions remain consistent across distribution families or differences are explainable (e.g., heavier tails → larger lifetime variance but stable ordering).
+
+---
+
+## Low-Cost Gains (Can be incorporated into above experiments)
+
+* **Control Overhead Measurement**: Provide curves of "control energy/total energy ratio" and "control packet count/bytes".
+* **Runtime/Complexity**: Curve of network building time per frame vs N, with complexity discussion.
+
+---
+
+## Code Changes (Corresponding to Section 6)
 
 **C++**
 
-* `collect_cds_members(t)`：逐帧输出 `C_t`（节点ID列表）。
-* `log_control_packet(bytes,type,t)`：累积控制包统计。
-* `measure_build_time(t)`：构网时延。
-* 能耗模型接口：`sample_energy_cost(model, params, rng)`，统一 E[c]=1。
+* `collect_cds_members(t)`: Output C_t (node ID list) frame by frame.
+* `log_control_packet(bytes,type,t)`: Accumulate control packet statistics.
+* `measure_build_time(t)`: Network building latency.
+* Energy cost model interface: `sample_energy_cost(model, params, rng)`, unified E[c]=1.
 
 **Python**
 
-* `analyze_stability.py`：读入 `C_t` 序列 → (J_t,\tau_t,S) 与 CDF。
-* `analyze_latency.py`：源汇对采样，计算 VB 路径跳数与 stretch。
-* `analyze_energy_balance.py`：CV/Gini/P90–P10。
-* `plot_suite.py`：生成 Fig-L/S/A/E 全套图；`--seeds seeds.txt`。
+* `analyze_stability.py`: Read C_t sequence → (J_t, τ_t, S) and CDF.
+* `analyze_latency.py`: Sample source-sink pairs, compute VB path hops and stretch.
+* `analyze_energy_balance.py`: CV/Gini/P90–P10.
+* `plot_suite.py`: Generate full Fig-L/S/A/E suite; `--seeds seeds.txt`.
 
-**目录/制品**
+**Directory/Artifacts**
 
 ```
 results/
   N{}/r{}/alpha{}/model{}/seed{}/
-    cds_t.csv   # 每帧CDS成员
-    ctrl.csv    # 控制包计数/字节
-    life.json   # 寿命/构网时延摘要
-    latency.csv # 跳数/stretch
+    cds_t.csv   # CDS members per frame
+    ctrl.csv    # Control packet count/bytes
+    life.json   # Lifetime/network building latency summary
+    latency.csv # Hops/stretch
 figs/{L,S,A,E}/*.pdf
 tables/*.csv
 ```
 
 ---
 
-## 撰写锚点（回复评审时可引用）
+## Writing Anchors (Can reference when replying to reviews)
 
-* **R4（可扩展性）**：Fig-L1/L2/L3/L4（N 到 300；两种密度情景）。
-* **R2（CDS 变化度量）**：Fig-S1/S2/S3 + 公式定义。
-* **R1（延迟/能量方差）**：Fig-A2（CDS-延迟权衡）、能量均衡指标。
-* **R3（模型合理性）**：Fig-E1/E2（分布与方差敏感性）。
+* **R4 (Scalability)**: Fig-L1/L2/L3/L4 (N up to 300; two density scenarios).
+* **R2 (CDS Change Metrics)**: Fig-S1/S2/S3 + formula definitions.
+* **R1 (Latency/Energy Variance)**: Fig-A2 (CDS-latency trade-off), energy balance metrics.
+* **R3 (Model Reasonableness)**: Fig-E1/E2 (distribution and variance sensitivity).

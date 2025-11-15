@@ -2,7 +2,7 @@
 #include <omp.h>
 using namespace std;
 
-/*** 轻量图结构 ***/
+/*** Lightweight Graph Structure ***/
 struct AdjGraph {
     int N = 0;
     vector<vector<int>> adj;
@@ -12,10 +12,10 @@ struct AdjGraph {
     }
 };
 
-/*** 工具：写入/读取 简易边表格式 ***/
-// 文件格式：
-// 第1行: N M
-// 接着 M 行: u v   (0-based, 无向)
+/*** Utility: Write/Read Simple Edge List Format ***/
+// File format:
+// Line 1: N M
+// Next M lines: u v   (0-based, undirected)
 static bool save_edges_txt(const string& path, int N, const vector<pair<int,int>>& edges){
     filesystem::create_directories(filesystem::path(path).parent_path());
     ofstream out(path);
@@ -30,7 +30,7 @@ static bool load_edges_txt(AdjGraph& G, const string& path){
     ifstream in(path);
     if(!in) return false;
     int N, M;
-    if(!(in >> N >> M)) return false;            // 不是我们的简易格式：解析失败
+    if(!(in >> N >> M)) return false;            // Not our simple format: parse failed
     if(N <= 0 || M < 0) return false;
     G.reset(N);
     for(int i=0;i<M;i++){
@@ -43,7 +43,7 @@ static bool load_edges_txt(AdjGraph& G, const string& path){
     return true;
 }
 
-/*** 生成单位圆盘图（连通），并保存为简易边表格式 ***/
+/*** Generate Unit Disk Graph (Connected) and Save as Simple Edge List Format ***/
 static bool gen_unit_disk_connected(AdjGraph& G, int N, int r, int range, uint32_t seed){
     mt19937 rng(seed);
     uniform_real_distribution<double> U(0.0, (double)range);
@@ -62,7 +62,7 @@ static bool gen_unit_disk_connected(AdjGraph& G, int N, int r, int range, uint32
                 if (dx*dx + dy*dy <= rr*rr) edges.emplace_back(i,j);
             }
         }
-        // 用临时邻接表检查连通
+        // Check connectivity using temporary adjacency list
         vector<vector<int>> adj(N);
         for(auto &e: edges){ adj[e.first].push_back(e.second); adj[e.second].push_back(e.first); }
         vector<char> vis(N,0);
@@ -73,7 +73,7 @@ static bool gen_unit_disk_connected(AdjGraph& G, int N, int r, int range, uint32
         }
         if(seen!=N) continue;
 
-        // 成功
+        // Success
         G.reset(N);
         G.adj = move(adj);
         return true;
@@ -81,25 +81,25 @@ static bool gen_unit_disk_connected(AdjGraph& G, int N, int r, int range, uint32
     return false;
 }
 
-/*** 尝试加载；若失败则生成并覆盖保存（使用简易边表格式） ***/
+/*** Try to Load; if Failed, Generate and Overwrite Save (Using Simple Edge List Format) ***/
 static bool load_or_build_graph(AdjGraph& G, int N, int r, int idx, int range=500){
-    // 使用绝对路径以避免工作目录问题
+    // Use absolute path to avoid working directory issues
     filesystem::path file_path(__FILE__);
     filesystem::path script_dir = filesystem::absolute(file_path).parent_path();
     filesystem::path path = script_dir / "output" / "graphs" / ("R=" + to_string(r))
                                       / ("N=" + to_string(N))
                                       / ("net" + to_string(idx) + ".txt");
 
-    // 尝试读我们定义的简易格式
+    // Try to read our simple format
     if(load_edges_txt(G, path)) return true;
 
-    // 不存在或不是简易格式 -> 生成并覆盖为简易格式
+    // Not found or not simple format -> generate and overwrite as simple format
     cout << "[GenGraph] Generating and saving: " << path << "\n" << flush;
     mt19937 seeder((uint32_t)(N*131u + r*17u + idx*10007u));
     for(int tries=0; tries<50; ++tries){
         AdjGraph tmp;
         if(gen_unit_disk_connected(tmp, N, r, range, seeder())){
-            // 从 tmp 反推出边表并保存
+            // Derive edge list from tmp and save
             vector<pair<int,int>> edges;
             for(int u=0; u<tmp.N; ++u){
                 for(int v: tmp.adj[u]) if(u<v) edges.emplace_back(u,v);
@@ -115,7 +115,7 @@ static bool load_or_build_graph(AdjGraph& G, int N, int r, int idx, int range=50
     return false;
 }
 
-/*** 分量标号：仅在 D 上连边 ***/
+/*** Component Labeling: Edge Only on D ***/
 static int label_components_on_D(const AdjGraph& G,
                                  const vector<int>& D,
                                  vector<int>& comp,
@@ -145,7 +145,7 @@ static int label_components_on_D(const AdjGraph& G,
     return cid;
 }
 
-/*** 全图 BFS 最短路 ***/
+/*** Full Graph BFS Shortest Path ***/
 static bool shortest_path(const AdjGraph& G, int s, int t, vector<int>& parent, vector<int>& path){
     const int N = G.N;
     fill(parent.begin(), parent.end(), -1);
@@ -169,7 +169,7 @@ static bool shortest_path(const AdjGraph& G, int s, int t, vector<int>& parent, 
     return true;
 }
 
-/*** GMERS on AdjGraph：α-参数化，支配+连通 ***/
+/*** GMERS on AdjGraph: α-Parameterized, Domination + Connectivity ***/
 static vector<int> gmers_adj(const AdjGraph& G,
                              const vector<double>& energy,
                              double alpha,
@@ -184,20 +184,20 @@ static vector<int> gmers_adj(const AdjGraph& G,
         return true;
     };
 
-    // 复用型 scratch
+    // Reusable scratch
     vector<int> mark(N, 0);
     int stamp = 1;
 
     uniform_real_distribution<double> U01(0.0, 1.0);
 
-    // ===== 1) 支配阶段 =====
+    // ===== 1) Domination Phase =====
     while(!all_covered()){
         int best = -1;
         double bestScore = -1.0;
         double bestTie = -1.0;
 
         for(int u=0; u<N; ++u){
-            // 用 stamp 去重统计未覆盖的"支配闭包"（自己+邻居）
+            // Count uncovered nodes in "dominating closure" (self + neighbors) without duplication using stamp
             int cov = 0; double sumE = 0.0;
 
             auto consider = [&](int v){
@@ -215,22 +215,22 @@ static vector<int> gmers_adj(const AdjGraph& G,
             if(cov==0){ ++stamp; if(stamp==INT_MAX){ fill(mark.begin(), mark.end(), 0); stamp=1; } continue; }
 
             double e_u = max(energy[u], 1e-12);
-            double e_norm = e_u / sumE;          // 归一化能量（相对未覆盖邻域）
-            double cov_term = (double)cov;       // 覆盖数量
+            double e_norm = e_u / sumE;          // Normalized energy (relative to uncovered neighborhood)
+            double cov_term = (double)cov;       // Coverage quantity
             double score = pow(e_norm, alpha) * pow(cov_term, 1.0 - alpha);
             double tie   = U01(rng);
 
             if(score > bestScore || (score==bestScore && tie>bestTie)){
                 bestScore = score; bestTie = tie; best = u;
             }
-            // 准备下一轮统计
+            // Prepare for next round statistics
             ++stamp; if(stamp==INT_MAX){ fill(mark.begin(), mark.end(), 0); stamp=1; }
         }
 
         if(best<0){
-            // 兜底：找一个未覆盖点
+            // Fallback: find an uncovered node
             for(int i=0;i<N;i++) if(!covered[i]){ best=i; break; }
-            if(best<0) break; // 不可能，但防御
+            if(best<0) break; // Impossible, but defensive
         }
         D.push_back(best);
         covered[best]=1;
@@ -239,7 +239,7 @@ static vector<int> gmers_adj(const AdjGraph& G,
 
     if(D.empty()) return D;
 
-    // ===== 2) 连通阶段：补点 =====
+    // ===== 2) Connectivity Phase: Add Points =====
     vector<int> comp(N,0);
     vector<char> isInD(N,0);
     vector<int> parent(N,-1), path;
@@ -247,15 +247,15 @@ static vector<int> gmers_adj(const AdjGraph& G,
     while(true){
         int cc = label_components_on_D(G, D, comp, isInD);
         if(cc<=1) break;
-        // 取两个不同分量的代表（随便拿到就行）
+        // Pick representatives from two different components (any will do)
         int a=-1, b=-1, ca=-1;
         for(int u: D){ if(a==-1){ a=u; ca=comp[u]; break; } }
         for(int u: D){ if(comp[u]!=ca){ b=u; break; } }
         if(a==-1 || b==-1) break;
 
-        if(!shortest_path(G, a, b, parent, path)) break; // 理论上连通，所以应当有路径
+        if(!shortest_path(G, a, b, parent, path)) break; // Theoretically connected, so path should exist
 
-        // 把中间点补到 D（首尾 a,b 已在 D 中）
+        // Add intermediate points to D (endpoints a,b already in D)
         for(size_t k=1; k+1<path.size(); ++k) D.push_back(path[k]);
         sort(D.begin(), D.end());
         D.erase(unique(D.begin(), D.end()), D.end());
@@ -264,7 +264,7 @@ static vector<int> gmers_adj(const AdjGraph& G,
     return D;
 }
 
-/*** 能耗采样（E[c]=1 的标准化参数） ***/
+/*** Energy Cost Sampling (Normalized Parameters with E[c]=1) ***/
 struct EnergyParams {
     double lognorm_sigma = 0.5;
     double weibull_k     = 1.5;
@@ -462,7 +462,7 @@ static void ex_cds_stability(){
                             int uni = (int)A.size() + (int)B.size() - inter;
                             double J   = uni? (double)inter/uni : 0.0;
                             int sym    = (int)A.size() + (int)B.size() - 2*inter;
-                            double Tau = uni? (double)sym/uni : 0.0; // 1 - J
+                            double Tau = uni? (double)sym/uni : 0.0; // 1 - J (symmetric difference ratio)
 
                             accJ += J; accTau += Tau; ++measures;
                         }

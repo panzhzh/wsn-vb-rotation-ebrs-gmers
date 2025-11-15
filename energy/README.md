@@ -1,104 +1,104 @@
 # Energy Optimization Experiments - Complete Guide
 
-## 📋 目录结构
+## 📋 Directory Structure
 
 ```
 energy/
-├── README.md                          # 本文档
+├── README.md                          # This document
 │
-├── 源代码文件
-│   ├── graphgene.cpp                  # 图生成程序
-│   ├── simulations.cpp                # 主论文实验 (ex1-ex7)
-│   ├── simulations_supplement.cpp     # 补充实验 (4个)
-│   ├── decideab.cpp                   # Ex0-Alpha 实验 (alpha扫描)
-│   └── graph.hpp                      # 图数据结构定义
+├── Source Code Files
+│   ├── graphgene.cpp                  # Graph generation program
+│   ├── simulations.cpp                # Main paper experiments (ex1-ex7)
+│   ├── simulations_supplement.cpp     # Supplementary experiments (4 experiments)
+│   ├── decideab.cpp                   # Ex0-Alpha experiment (alpha scanning)
+│   └── graph.hpp                      # Graph data structure definition
 │
-├── 执行脚本
-│   ├── run_experiments.sh             # ★ 主脚本：执行所有实验 (ex0-ex7)
-│   ├── run_supplement.sh              # 补充实验专用脚本
-│   └── plot*.py                       # 绘图脚本
+├── Execution Scripts
+│   ├── run_experiments.sh             # ★ Main script: execute all experiments (ex0-ex7)
+│   ├── run_supplement.sh              # Supplementary experiments dedicated script
+│   └── plot*.py                       # Plotting scripts
 │
-└── 输出目录 (执行脚本后生成)
+└── Output Directories (generated after running scripts)
     ├── output/
-    │   ├── graphs/                    # 生成的图数据
-    │   ├── ex0_alpha/                 # Ex0-Alpha 结果 (alpha扫描)
-    │   ├── alpha_scan/                # Ex0-Alpha 结果 (原目录名)
-    │   ├── ex1/ ~ ex7/                # 主实验结果
-    │   └── exX/ (补充)                # 补充实验结果
-    ├── figures/                       # 生成的图表
-    ├── supplement/                    # 补充实验图表
-    └── tables/                        # CSV数据文件
+    │   ├── graphs/                    # Generated graph data
+    │   ├── ex0_alpha/                 # Ex0-Alpha results (alpha scanning)
+    │   ├── alpha_scan/                # Ex0-Alpha results (original directory name)
+    │   ├── ex1/ ~ ex7/                # Main experiment results
+    │   └── exX/ (supplementary)       # Supplementary experiment results
+    ├── figures/                       # Generated plots
+    ├── supplement/                    # Supplementary experiment plots
+    └── tables/                        # CSV data files
 ```
 
 ---
 
-## 🔧 源代码说明
+## 🔧 Source Code Description
 
-### 1. **graphgene.cpp** - 图生成程序
-**功能**: 生成单位圆盘随机几何图和特定度数分布的图
+### 1. **graphgene.cpp** - Graph Generation Program
+**Function**: Generate unit disk random geometric graphs and graphs with specific degree distributions
 
-**编译**:
+**Compilation**:
 ```bash
 g++ -o graphgene.exe graphgene.cpp -std=c++17
 ```
 
-**执行**:
+**Execution**:
 ```bash
 ./graphgene.exe
-# 选择模式:
-#   1: 单位圆盘随机图 (R=250, N=10-100, 100个样本/N)
-#      输出: ./output/graphs/R=250/N=*/net{0..99}.txt
-#   2: 特定度数图 (smaller/equal/greater)
-#      输出: ./output/graphs/{smaller|equal|greater}/N={50,100}/net{0..99}.txt
+# Select mode:
+#   1: Unit disk random graph (R=250, N=10-100, 100 samples/N)
+#      Output: ./output/graphs/R=250/N=*/net{0..99}.txt
+#   2: Specific degree graph (smaller/equal/greater)
+#      Output: ./output/graphs/{smaller|equal|greater}/N={50,100}/net{0..99}.txt
 ```
 
 ---
 
-### 2. **simulations.cpp** - 主论文实验 (Ex1-Ex7)
-**功能**: 实现7个主要实验，测试GMERS算法的性能
+### 2. **simulations.cpp** - Main Paper Experiments (Ex1-Ex7)
+**Function**: Implement 7 main experiments to test GMERS algorithm performance
 
-**编译**:
+**Compilation**:
 ```bash
 g++ -o simulations.exe simulations.cpp -std=c++17 -fopenmp
 ```
 
-**执行**:
+**Execution**:
 ```bash
-export OMP_NUM_THREADS=<num>  # 推荐使用所有CPU核心
+export OMP_NUM_THREADS=<num>  # Recommend using all CPU cores
 ./simulations.exe
-# 输出: ./output/ex{1..7}/
+# Output: ./output/ex{1..7}/
 ```
 
-**线程数参数**:
-- 推荐: `export OMP_NUM_THREADS=$(nproc)` (使用所有核心)
-- 默认: 系统自动分配
-- 最小: 1 (单线程)
-- 最大: CPU核心数
+**Thread Number Parameters**:
+- Recommended: `export OMP_NUM_THREADS=$(nproc)` (use all cores)
+- Default: System auto-allocation
+- Minimum: 1 (single-threaded)
+- Maximum: Number of CPU cores
 
 ---
 
-### 3. **simulations_supplement.cpp** - 补充实验 (4个)
-**功能**: 实现4个补充实验
+### 3. **simulations_supplement.cpp** - Supplementary Experiments (4)
+**Function**: Implement 4 supplementary experiments
 
-**编译**:
+**Compilation**:
 ```bash
 g++ -o simulations_supplement.exe simulations_supplement.cpp -std=c++17 -fopenmp
 ```
 
-**执行**:
+**Execution**:
 ```bash
 export OMP_NUM_THREADS=16
 ./simulations_supplement.exe [experiment_name]
 
-# 可选参数:
-#   alpha_sweep       Ex-Alpha-Sweep (α参数扫描)
-#   large            Ex-Large (大规模网络)
-#   stability        Ex-CDS-Stability (稳定性)
-#   energy_model     Ex-Energy-Model (能量模型)
-#   all              执行所有补充实验
+# Optional parameters:
+#   alpha_sweep       Ex-Alpha-Sweep (α parameter scanning)
+#   large            Ex-Large (large-scale network)
+#   stability        Ex-CDS-Stability (stability)
+#   energy_model     Ex-Energy-Model (energy model)
+#   all              Run all supplementary experiments
 ```
 
-**输出**:
+**Output**:
 - `./output/ex_alpha_sweep/`
 - `./output/ex_large/`
 - `./output/ex_cds_stability/`
@@ -106,86 +106,86 @@ export OMP_NUM_THREADS=16
 
 ---
 
-### 4. **decideab.cpp** - Ex0-Alpha (Alpha扫描)
-**功能**: Alpha参数扫描实验，测试α=0.0-1.0对网络寿命的影响
+### 4. **decideab.cpp** - Ex0-Alpha (Alpha Scanning)
+**Function**: Alpha parameter scanning experiment to test the impact of α=0.0-1.0 on network lifetime
 
-**编译**:
+**Compilation**:
 ```bash
 g++ -o decideab.exe decideab.cpp -std=c++17
 ```
 
-**执行**:
+**Execution**:
 ```bash
 ./decideab.exe
-# 输入数据: ./output/graphs/{smaller|equal|greater}/N={50,100}/net*.txt
-# 输出数据: ./output/alpha_scan/{smaller|equal|greater}/N=*.txt
+# Input data: ./output/graphs/{smaller|equal|greater}/N={50,100}/net*.txt
+# Output data: ./output/alpha_scan/{smaller|equal|greater}/N=*.txt
 ```
 
-**参数**:
-- **α值**: 0.0, 0.1, 0.2, ..., 1.0 (11个点)
-- **度数类型**: smaller, equal, greater
-- **节点数**: N=50, 100
-- **样本数**: 100 (每配置)
+**Parameters**:
+- **α values**: 0.0, 0.1, 0.2, ..., 1.0 (11 points)
+- **Degree types**: smaller, equal, greater
+- **Node counts**: N=50, 100
+- **Sample size**: 100 (per configuration)
 
 ---
 
-### 5. **graph.hpp** - 图数据结构
-**功能**: 定义 `Graph` 类，用于图的存储和操作
+### 5. **graph.hpp** - Graph Data Structure
+**Function**: Define `Graph` class for graph storage and manipulation
 
-**包含**:
-- `number_of_nodes`: 节点数
-- `outneighbors()`: 获取邻居列表
-- `read()`: 从文件读取图
-- `write()`: 将图写入文件
+**Includes**:
+- `number_of_nodes`: Number of nodes
+- `outneighbors()`: Get neighbor list
+- `read()`: Read graph from file
+- `write()`: Write graph to file
 
 ---
 
-## 🚀 执行脚本说明
+## 🚀 Execution Scripts Description
 
-### ★ 主脚本: `run_experiments.sh`
+### ★ Main Script: `run_experiments.sh`
 
-**功能**: 一键执行完整的 ex0-ex7 实验流程
+**Function**: One-click execution of complete ex0-ex7 experiment workflow
 
-**使用方式**:
+**Usage**:
 ```bash
 cd energy/
 bash run_experiments.sh
 ```
 
-**执行流程**:
+**Execution Flow**:
 
-| STEP | 操作 | 命令 | 输出位置 |
-|------|------|------|--------|
-| 1 | 检查/编译 | 自动编译 graphgene, simulations, decideab | - |
-| 2 | 创建目录 | mkdir output/graphs 等 | - |
-| 3 | 生成图 Mode 1 | `echo 1 \| graphgene.exe` | ./output/graphs/R=250/ |
-| 4 | 生成图 Mode 2 | `echo 2 \| graphgene.exe` | ./output/graphs/{smaller\|equal\|greater}/ |
+| STEP | Operation | Command | Output Location |
+|------|-----------|---------|-----------------|
+| 1 | Check/Compile | Auto compile graphgene, simulations, decideab | - |
+| 2 | Create directories | mkdir output/graphs etc. | - |
+| 3 | Generate graphs Mode 1 | `echo 1 \| graphgene.exe` | ./output/graphs/R=250/ |
+| 4 | Generate graphs Mode 2 | `echo 2 \| graphgene.exe` | ./output/graphs/{smaller\|equal\|greater}/ |
 | 5 | Ex0-Alpha | `./decideab.exe` | ./output/alpha_scan/ |
 | 6 | Ex1-Ex7 | `./simulations.exe` | ./output/ex{1..7}/ |
-| 7 | 验证 | 统计输出文件 | - |
+| 7 | Verification | Count output files | - |
 
-**预期运行时间**:
-- STEP 1-2: < 1 分钟
-- STEP 3: 10-15 分钟 (图生成)
-- STEP 4: 5-10 分钟 (图生成)
-- STEP 5: 10-15 分钟 (alpha扫描)
-- STEP 6: 30分钟-2小时 (主实验，取决于CPU)
+**Expected Runtime**:
+- STEP 1-2: < 1 minute
+- STEP 3: 10-15 minutes (graph generation)
+- STEP 4: 5-10 minutes (graph generation)
+- STEP 5: 10-15 minutes (alpha scanning)
+- STEP 6: 30 minutes - 2 hours (main experiments, depends on CPU)
 
-**总耗时**: 约 2-3 小时（使用多核CPU）
+**Total Runtime**: Approximately 2-3 hours (using multi-core CPU)
 
 ---
 
-### 补充脚本: `run_supplement.sh`
+### Supplementary Script: `run_supplement.sh`
 
-**功能**: 执行4个补充实验
+**Function**: Execute 4 supplementary experiments
 
-**使用方式**:
+**Usage**:
 ```bash
 cd energy/
 bash run_supplement.sh
 ```
 
-**或单独运行某个补充实验**:
+**Or run a specific supplementary experiment individually**:
 ```bash
 export OMP_NUM_THREADS=16
 ./simulations_supplement.exe alpha_sweep
@@ -196,17 +196,17 @@ export OMP_NUM_THREADS=16
 
 ---
 
-## 📊 参数详解
+## 📊 Parameter Details
 
-### OpenMP 线程数设置
+### OpenMP Thread Count Setting
 
-**主实验推荐**:
+**Main Experiments Recommendation**:
 ```bash
-export OMP_NUM_THREADS=$(nproc)  # 使用所有CPU核心
+export OMP_NUM_THREADS=$(nproc)  # Use all CPU cores
 ./simulations.exe
 ```
 
-**补充实验推荐**:
+**Supplementary Experiments Recommendation**:
 ```bash
 export OMP_NUM_THREADS=16
 ./simulations_supplement.exe all
@@ -214,45 +214,45 @@ export OMP_NUM_THREADS=16
 
 **Ex0-Alpha**:
 ```bash
-./decideab.exe  # 单线程 (原代码不支持并行)
+./decideab.exe  # Single-threaded (original code does not support parallelism)
 ```
 
-**查看CPU核心数**:
+**Check CPU Core Count**:
 ```bash
-nproc                    # 查看物理核心数
-lscpu | grep "CPU(s)"    # 详细信息
+nproc                    # View physical core count
+lscpu | grep "CPU(s)"    # Detailed information
 ```
 
-### 实验参数
+### Experiment Parameters
 
-#### Ex0-Alpha (Alpha扫描)
-- **α范围**: 0.0 → 1.0 (11个点，步长0.1)
-- **度数类型**: 3种 (smaller/equal/greater)
-- **节点数**: 2种 (N=50, 100)
-- **样本数**: 100 (每配置)
-- **总处理**: 6×11 = 66组实验
+#### Ex0-Alpha (Alpha Scanning)
+- **α range**: 0.0 → 1.0 (11 points, step 0.1)
+- **Degree types**: 3 types (smaller/equal/greater)
+- **Node counts**: 2 types (N=50, 100)
+- **Sample size**: 100 (per configuration)
+- **Total processing**: 6×11 = 66 experiment groups
 
-#### Ex1-Ex7 (主实验)
-- **拓扑**: 单位圆盘随机图 (R=250)
-- **节点数**: N=10, 20, 30, ..., 100 (10种)
-- **样本数**: 100 (每N值)
-- **总处理**: 1000个图
+#### Ex1-Ex7 (Main Experiments)
+- **Topology**: Unit disk random graph (R=250)
+- **Node counts**: N=10, 20, 30, ..., 100 (10 types)
+- **Sample size**: 100 (per N value)
+- **Total processing**: 1000 graphs
 
-#### 补充实验
-- **Alpha Sweep**: α=0.1-0.9 (9个点)
-- **Large**: N=100-1000 (可扩展性测试)
-- **Stability**: CDS成员变化分析
-- **Energy Model**: 4种能量分布 (Exp, Gamma, Lognormal, Weibull)
+#### Supplementary Experiments
+- **Alpha Sweep**: α=0.1-0.9 (9 points)
+- **Large**: N=100-1000 (scalability testing)
+- **Stability**: CDS member change analysis
+- **Energy Model**: 4 energy distributions (Exp, Gamma, Lognormal, Weibull)
 
 ---
 
-## 📈 输出数据格式
+## 📈 Output Data Format
 
-### 实验结果 (.txt)
+### Experiment Results (.txt)
 
-**Ex0-Alpha 结果格式**:
+**Ex0-Alpha Result Format**:
 ```
-# Alpha 扫描结果 (N=50, smaller 度数)
+# Alpha scanning results (N=50, smaller degree)
 # alpha_value  average_lifetime
 0.0 XXXXX
 0.1 XXXXX
@@ -260,105 +260,105 @@ lscpu | grep "CPU(s)"    # 详细信息
 1.0 XXXXX
 ```
 
-**主实验结果格式**:
+**Main Experiment Result Format**:
 ```
 N=10
 ...
 <metric1> <metric2> <metric3> ...
 ```
 
-### CSV 数据 (tables/)
+### CSV Data (tables/)
 
-**补充实验导出的CSV**:
-- `alpha_sweep_lifetime.csv` - Alpha扫描网络寿命
-- `alpha_sweep_cds_size.csv` - Alpha扫描CDS大小
-- `large_scalability.csv` - 大规模可扩展性
-- `stability_metrics.csv` - 稳定性指标
-- `energy_model_comparison.csv` - 能量模型对比
-- `README.md` - CSV字段说明
+**Supplementary Experiments Exported CSV**:
+- `alpha_sweep_lifetime.csv` - Alpha scanning network lifetime
+- `alpha_sweep_cds_size.csv` - Alpha scanning CDS size
+- `large_scalability.csv` - Large-scale scalability
+- `stability_metrics.csv` - Stability metrics
+- `energy_model_comparison.csv` - Energy model comparison
+- `README.md` - CSV field description
 
 ---
 
-## 🎯 完整使用示例
+## 🎯 Complete Usage Examples
 
-### 场景1: 快速测试 (完整流程)
+### Scenario 1: Quick Test (Complete Workflow)
 ```bash
 cd energy/
 bash run_experiments.sh
 ```
-执行时间: ~2-3小时
+Execution time: ~2-3 hours
 
-### 场景2: 只运行主实验
+### Scenario 2: Run Only Main Experiments
 ```bash
 cd energy/
 
-# 1. 生成主实验所需的图 (Mode 1)
+# 1. Generate graphs needed for main experiments (Mode 1)
 echo "1" | ./graphgene.exe
 
-# 2. 运行主实验
+# 2. Run main experiments
 export OMP_NUM_THREADS=$(nproc)
 ./simulations.exe
 
-# 3. 绘图
+# 3. Generate plots
 python3 plot.py
 ```
-执行时间: ~1小时
+Execution time: ~1 hour
 
-### 场景3: 只运行 Ex0-Alpha
+### Scenario 3: Run Only Ex0-Alpha
 ```bash
 cd energy/
 
-# 1. 生成 Ex0-Alpha 所需的图 (Mode 2)
+# 1. Generate graphs needed for Ex0-Alpha (Mode 2)
 echo "2" | ./graphgene.exe
 
-# 2. 运行 alpha 扫描
+# 2. Run alpha scanning
 ./decideab.exe
 
-# 3. 查看结果
+# 3. View results
 cat ./output/alpha_scan/smaller/N=50_result.txt
 ```
-执行时间: ~20分钟
+Execution time: ~20 minutes
 
-### 场景4: 只运行补充实验
+### Scenario 4: Run Only Supplementary Experiments
 ```bash
 cd energy/
 
-# 1. 编译
+# 1. Compile
 g++ -o simulations_supplement.exe simulations_supplement.cpp -std=c++17 -fopenmp
 
-# 2. 运行所有补充实验
+# 2. Run all supplementary experiments
 export OMP_NUM_THREADS=16
 ./simulations_supplement.exe all
 
-# 3. 生成图表和CSV
+# 3. Generate plots and CSV
 python3 plot_all_supplement.py
 ```
-执行时间: ~30分钟
+Execution time: ~30 minutes
 
 ---
 
-## ⚙️ 高级用法
+## ⚙️ Advanced Usage
 
-### 修改参数
+### Modify Parameters
 
-#### 修改 Ex0-Alpha 的 α 值范围
-编辑 `decideab.cpp` 第 189-191 行:
+#### Modify Ex0-Alpha α value range
+Edit `decideab.cpp` lines 189-191:
 ```cpp
-for(double a = 0.1; a <= 1.0; a += 0.1)  // 修改步长
+for(double a = 0.1; a <= 1.0; a += 0.1)  // Modify step size
 ```
 
-#### 修改 Ex1-Ex7 的网络规模
-编辑 `simulations.cpp` 中的参数声明
+#### Modify Ex1-Ex7 network scale
+Edit parameter declarations in `simulations.cpp`
 
-#### 修改补充实验的线程数
+#### Modify supplementary experiments thread count
 ```bash
-export OMP_NUM_THREADS=32  # 改为32线程
+export OMP_NUM_THREADS=32  # Change to 32 threads
 ./simulations_supplement.exe all
 ```
 
-### 并行运行多个实验
+### Run Multiple Experiments in Parallel
 ```bash
-# 运行 graphgene 和 simulations 并行
+# Run graphgene and simulations in parallel
 echo "1" | ./graphgene.exe &
 GRAPH_PID=$!
 wait $GRAPH_PID
@@ -367,7 +367,7 @@ export OMP_NUM_THREADS=$(nproc)
 ./simulations.exe &
 SIM_PID=$!
 
-# 同时运行补充实验
+# Run supplementary experiments simultaneously
 export OMP_NUM_THREADS=8
 ./simulations_supplement.exe all
 
@@ -376,75 +376,75 @@ wait $SIM_PID
 
 ---
 
-## 🔍 故障排除
+## 🔍 Troubleshooting
 
-### 问题1: 编译错误
-**症状**: `error: ... -fopenmp: command not found`
+### Problem 1: Compilation Error
+**Symptom**: `error: ... -fopenmp: command not found`
 
-**解决**:
+**Solution**:
 ```bash
-# 安装 OpenMP
+# Install OpenMP
 sudo apt install libomp-dev  # Ubuntu/Debian
 brew install libomp          # macOS
 ```
 
-### 问题2: 内存不足
-**症状**: `std::bad_alloc` 或进程被杀死
+### Problem 2: Out of Memory
+**Symptom**: `std::bad_alloc` or process killed
 
-**解决**:
-- 减少样本数 (修改源代码)
-- 减少线程数: `export OMP_NUM_THREADS=4`
-- 使用更小的 N 值进行测试
+**Solution**:
+- Reduce sample size (modify source code)
+- Reduce thread count: `export OMP_NUM_THREADS=4`
+- Use smaller N values for testing
 
-### 问题3: 图文件不存在
-**症状**: "文件不存在" 错误
+### Problem 3: Graph File Not Found
+**Symptom**: "File not found" error
 
-**解决**:
+**Solution**:
 ```bash
-# 确保先运行图生成
+# Ensure graph generation is run first
 echo "1" | ./graphgene.exe
 echo "2" | ./graphgene.exe
 
-# 检查生成的文件
+# Check generated files
 ls output/graphs/R=250/N=10/
 ls output/graphs/smaller/N=50/
 ```
 
-### 问题4: 脚本权限不足
-**症状**: `Permission denied: ./run_experiments.sh`
+### Problem 4: Script Permission Denied
+**Symptom**: `Permission denied: ./run_experiments.sh`
 
-**解决**:
+**Solution**:
 ```bash
 chmod +x run_experiments.sh
 chmod +x run_supplement.sh
-bash run_experiments.sh  # 用 bash 执行
+bash run_experiments.sh  # Execute with bash
 ```
 
 ---
 
-## 📝 快速参考
+## 📝 Quick Reference
 
-| 任务 | 命令 | 执行时间 |
-|------|------|--------|
-| 执行所有实验 (ex0-ex7) | `bash run_experiments.sh` | ~2-3小时 |
-| 仅生成图 Mode 1 | `echo 1 \| ./graphgene.exe` | ~10分钟 |
-| 仅生成图 Mode 2 | `echo 2 \| ./graphgene.exe` | ~5分钟 |
-| 仅运行 Ex0-Alpha | `./decideab.exe` | ~10分钟 |
-| 仅运行主实验 | `export OMP_NUM_THREADS=$(nproc); ./simulations.exe` | ~1小时 |
-| 仅运行补充实验 | `export OMP_NUM_THREADS=16; ./simulations_supplement.exe all` | ~30分钟 |
-| 编译所有 | `g++ -o *.exe *.cpp -std=c++17 -fopenmp` | ~30秒 |
-
----
-
-## 📞 联系和反馈
-
-如有问题或建议，请查看:
-- 各脚本文件的注释
-- 源代码中的详细文档
-- tables/README.md (CSV数据说明)
+| Task | Command | Execution Time |
+|------|---------|-----------------|
+| Run all experiments (ex0-ex7) | `bash run_experiments.sh` | ~2-3 hours |
+| Generate graphs Mode 1 only | `echo 1 \| ./graphgene.exe` | ~10 minutes |
+| Generate graphs Mode 2 only | `echo 2 \| ./graphgene.exe` | ~5 minutes |
+| Run Ex0-Alpha only | `./decideab.exe` | ~10 minutes |
+| Run main experiments only | `export OMP_NUM_THREADS=$(nproc); ./simulations.exe` | ~1 hour |
+| Run supplementary experiments only | `export OMP_NUM_THREADS=16; ./simulations_supplement.exe all` | ~30 minutes |
+| Compile all | `g++ -o *.exe *.cpp -std=c++17 -fopenmp` | ~30 seconds |
 
 ---
 
-**最后更新**: 2025-10-26
-**版本**: 2.0
-**状态**: ✅ 完成
+## 📞 Contact and Feedback
+
+For questions or suggestions, please refer to:
+- Comments in each script file
+- Detailed documentation in source code
+- tables/README.md (CSV data description)
+
+---
+
+**Last Updated**: 2025-10-26
+**Version**: 2.0
+**Status**: ✅ Complete
