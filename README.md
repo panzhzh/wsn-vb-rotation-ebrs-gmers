@@ -12,41 +12,26 @@ This project implements the GMERS (Greedy Minimum Energy Ratio Selection) algori
 ## Directory Structure
 
 ```
-cecs/
-├── energy/                       Core experiment code directory
-│   ├── Source Code
-│   │   ├── graph.hpp            Graph data structure definition
-│   │   ├── graphgene.cpp        Graph generation program (two modes)
-│   │   ├── simulations.cpp      Main experiment executor (Ex1-Ex7)
-│   │   ├── simulations_supplement.cpp  Supplementary experiment executor (4 experiments)
-│   │   └── decideab.cpp         Ex0-Alpha experiment (alpha scanning)
-│   │   └── STGCDP.exe           STG/CDP experiment
+code_cecs/
+├── energy/                           Core code directory
+│   ├── *.cpp, *.hpp                  Source code (C++17)
+│   │   ├── graph.hpp                 Graph data structure
+│   │   ├── graphgene.cpp             Graph generation program
+│   │   ├── simulations.cpp           Main experiments (Ex1-Ex7)
+│   │   ├── simulations_supplement.cpp Supplementary experiments
+│   │   ├── decideab.cpp              Ex0-Alpha experiment
+│   │   └── vectoruse.hpp             Vector utility functions
 │   │
-│   ├── Execution Scripts
-│   │   ├── run_experiments.sh   One-click run all experiments
-│   │   └── run_supplement.sh    Run supplementary experiments
-│   │
-│   ├── Plotting Scripts
-│   │   ├── plot.py              Main experiment plotting
-│   │   └── plot_all_supplement.py  Supplementary experiment plotting
-│   │
-│   ├── Data
-│   │   ├── smaller/             Graph data (small degree)
-│   │   ├── equal/               Graph data (medium degree)
-│   │   ├── greater/             Graph data (large degree)
-│   │   └── output/              Generated results output
-│   │       ├── graphs/          Generated graph files
-│   │       ├── ex0_alpha/       Ex0-Alpha results
-│   │       ├── ex1-ex7/         Main experiment results
-│   │       └── exX/             Supplementary experiment results
-│   │
-│   └── Documentation
-│       └── README.md            Detailed usage guide
+│   ├── run_experiments.sh            Execute all experiments
+│   ├── run_supplement.sh             Execute supplementary experiments
+│   ├── plot_figure.py                Plotting script for main experiments
+│   └── plot_all_supplement.py        Plotting script for supplementary experiments
 │
-├── docs/                        Project documentation
-├── figures/                     Generated plots
-├── tables/                      Exported CSV data
-└── README.md                    This file
+├── docs/                             Documentation
+├── tables/                           CSV data output
+├── figures/                          Generated plots (output)
+├── output/                           Experiment results (output)
+└── README.md                         This file
 ```
 
 ## Experiment Description
@@ -70,42 +55,22 @@ cecs/
 
 **Graph Generation**: Unit disk random geometric graphs (R=250, N=10-100, 100 samples per N)
 
-**Ex1**: Performance comparison of GMERS with traditional methods
-- Compare lifetime, convergence time, computational cost
-
-**Ex2**: Impact of different initial energy allocation schemes
-- Uniform vs. non-uniform allocation
-
-**Ex3**: Impact of network topology on CDS performance
-- Performance under different node densities
-
-**Ex4**: Single parameter optimization
-- Sensitivity analysis of α
-
-**Ex5**: Dynamic frame sequence analysis
-- CDS member changes over time
-
-**Ex6**: Multi-parameter joint optimization
-- Combined effects of multiple parameters
-
-**Ex7**: Scenario-specific optimization
-- Energy-constrained or delay-sensitive scenarios
+Each experiment compares GMERS with baseline algorithms under different conditions:
+- **Ex1**: Uniform initial energy (100 units)
+- **Ex2**: Random initial energy [50, 100]
+- **Ex3**: Average CDS size (uniform energy)
+- **Ex4**: Average runtime per frame
+- **Ex5**: Energy balance analysis
+- **Ex6**: Average CDS size (random energy)
+- **Ex7**: CDS member change frequency
 
 ### Supplementary Experiments
 
-**Ex-Alpha-Sweep**: Extended parameter scanning (α∈[0, 1.2], showing out-of-range degradation)
-
-**Ex-Large**: Large-scale network scalability (N up to 300 nodes)
-
-**Ex-CDS-Stability**: CDS stability analysis
-- Jaccard similarity (J_t)
-- Member change rate (τ_t)
-
-**Ex-Energy-Model**: Comparison of different energy distribution models
-- Exponential distribution
-- Gamma distribution
-- Lognormal distribution
-- Weibull distribution
+Four additional experiments for robustness and scalability validation:
+- **Ex-Alpha-Sweep**: Extended α range [0, 1.2] scanning
+- **Ex-Large**: Scalability test up to 300 nodes
+- **Ex-CDS-Stability**: Jaccard similarity and member change rate
+- **Ex-Energy-Model**: Robustness across energy distributions
 
 ## Quick Start
 
@@ -141,29 +106,11 @@ export OMP_NUM_THREADS=16
 
 ## Output Description
 
-### Plot Files (figures/)
+**figures/**: Generated plots (ex1-ex7 and alpha scanning results)
 
-| File | Source | Content |
-|------|--------|---------|
-| figure1.png - figure7.png | Ex1-Ex7 | Main experiment result curves |
-| figure3_alpha_scan.png | Ex0-Alpha | Alpha scanning curves |
-| supplement/*.png | Supplementary experiments | Supplementary experiment plots |
+**tables/**: CSV data files from supplementary experiments
 
-### Data Files (tables/)
-
-| File | Source | Format |
-|------|--------|--------|
-| *.csv | Supplementary experiments | CSV format data |
-| README.md | Data description | Field explanation document |
-
-### Experiment Results (output/)
-
-| Directory | Content |
-|-----------|---------|
-| graphs/ | Generated topology graph files |
-| ex0_alpha/ | Ex0-Alpha raw output |
-| ex1-ex7/ | Main experiment raw output |
-| exX/ | Supplementary experiment raw output |
+**output/**: Raw experiment data (graphs, result files)
 
 ## Parameter Configuration
 
@@ -217,13 +164,15 @@ Modify in source code:
 ## Compilation Commands
 
 ```bash
+cd energy/
+
 # Individual compilation
 g++ -o graphgene.exe graphgene.cpp -std=c++17
 g++ -o simulations.exe simulations.cpp -std=c++17 -fopenmp
 g++ -o decideab.exe decideab.cpp -std=c++17
 g++ -o simulations_supplement.exe simulations_supplement.cpp -std=c++17 -fopenmp
 
-# Or use script for automatic compilation
+# Or automatic compilation via script
 bash run_experiments.sh
 ```
 
