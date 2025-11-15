@@ -1,0 +1,171 @@
+# ==========================================
+# Build & Compilation Output
+# ==========================================
+*.exe
+*.o
+*.obj
+*.out
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# Compiler-specific files
+*.gch
+*.pch
+*.idb
+*.pdb
+
+# ==========================================
+# IDE & Editor Files
+# ==========================================
+.vscode/
+.idea/
+*.vs/
+*.user
+*.sln.user
+*.vcxproj.user
+*.ncb
+*.aps
+.DS_Store
+.project
+.classpath
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.vim/
+
+# ==========================================
+# Build Output & Temp Files
+# ==========================================
+build/
+dist/
+bin/
+.build/
+cmake-build-*/
+
+# ==========================================
+# Generated Experiment Output
+# ==========================================
+# 实验生成的结果数据（大量文件，频繁更新）
+energy/output/
+figures/
+tables/
+
+# 具体排除以下子目录
+energy/output/*
+!energy/output/.gitkeep
+
+# ==========================================
+# Generated Graph Files
+# ==========================================
+# 单位圆盘随机几何图生成的文件
+*.g
+*.graph
+energy/smaller/
+energy/equal/
+energy/greater/
+
+# ==========================================
+# Runtime & Temporary Files
+# ==========================================
+*.tmp
+*.temp
+*.cache
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# ==========================================
+# Data & Analysis Files
+# ==========================================
+# CSV 数据文件（实验输出）
+*.csv
+
+# 绘图输出
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.svg
+
+# 中间数据文件
+*.dat
+*.txt
+energy/output/**/*.txt
+
+# ==========================================
+# OS-specific Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+
+# Windows
+Thumbs.db
+*.lnk
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# ==========================================
+# Project-Specific Files
+# ==========================================
+# Origin 软件项目文件
+origin/*.opju
+origin/
+
+# 其他临时文件
+*.bak
+*.backup
+*.swp
+.~*
+
+# ==========================================
+# Research & Documentation (Optional)
+# ==========================================
+# 保留论文和文档，只排除生成的版本
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.out
+*.run.xml
+*.toc
+*.idx
+*.ilg
+*.ind
+
+# ==========================================
+# Keep Important Files
+# ==========================================
+# 确保以下重要文件不被忽略
+!energy/README.md
+!energy/run_experiments.sh
+!energy/run_supplement.sh
+!energy/plot.py
+!energy/plot_all_supplement.py
+!docs/
+!README.md
