@@ -50,7 +50,7 @@ public:
         number_of_nodes = 0;
         number_of_edges = 0;
     }
-    Graph(int N, int M) //生成N个节点，M条边的网络
+    Graph(int N, int M) // Generate network with N nodes and M edges
     {
         number_of_nodes = N;
         number_of_edges = M;
@@ -107,25 +107,25 @@ public:
         delete[] nodes;
         delete[] edges;
     }
-    //无特殊说明，输入输出都是节点的地址，不是id
-    vector<int> outneighbors(int i); //输出出节点的集合
-    vector<int> inneighbors(int i); //输出入邻居的集合
-    vector<int> bineighbors(int i); //双向邻居
-    int id_to_address(int i); //将id转换为地址
-    bool is_neighbor(int i, int j); //节点(id)i，j是否相邻
-    bool is_strong_connected(); //判断G是否强连通
-    bool is_connected(); //判断G是否连通
-    bool st_is_k_connected(int s, int t, int k); //节点i,j是否k强连通
-    bool is_k_connected(int k); //判断g是否k强连通
-    int max_flow(int i, int j); //利用dinic算法计算(id)i,j最大流
-    bool bfs(int s, int t); //dinic算法中的分层部分,若s不能到达t，返回false
-    int dfs(int s, int t, int flow); //利用深度搜索查找增广路
+    // Unless otherwise specified, input and output are node addresses, not IDs
+    vector<int> outneighbors(int i); // Output outgoing neighbors of node
+    vector<int> inneighbors(int i); // Output incoming neighbors
+    vector<int> bineighbors(int i); // Bidirectional neighbors
+    int id_to_address(int i); // Convert ID to address
+    bool is_neighbor(int i, int j); // Check if nodes i, j are adjacent
+    bool is_strong_connected(); // Check if G is strongly connected
+    bool is_connected(); // Check if G is connected
+    bool st_is_k_connected(int s, int t, int k); // Check if nodes s, t are k-strongly connected
+    bool is_k_connected(int k); // Check if G is k-strongly connected
+    int max_flow(int i, int j); // Calculate max flow from i to j using Dinic algorithm
+    bool bfs(int s, int t); // Layering phase of Dinic algorithm, returns false if s cannot reach t
+    int dfs(int s, int t, int flow); // Use DFS to find augmenting path
     void write(string path);
     void read(string path);
     vector<int> st_minimum_cut(int i, int j);
-    Graph flow_graph(); //生成用来计算最大流的网络
-    Graph subgraph(vector<int> C); //根据集合C生成子图
-    Graph reverse(); //生成反向网络
+    Graph flow_graph(); // Generate network for max flow calculation
+    Graph subgraph(vector<int> C); // Generate subgraph based on set C
+    Graph reverse(); // Generate reversed network
     int degree(int i);
     vector<int> all_nodes();
 };
@@ -180,14 +180,14 @@ int Graph::id_to_address(int i)
 Graph Graph::flow_graph()
 {
     Graph g(2*number_of_nodes, 2*(number_of_nodes + number_of_edges));
-    for(int n = 0; n < number_of_nodes; n++) //拆分节点,2n是入节点，2n+1是出节点
+    for(int n = 0; n < number_of_nodes; n++) // Split nodes: 2n is input node, 2n+1 is output node
     {
         g.nodes[2*n].id = nodes[n].id;
         g.nodes[2*n].head = -1;
         g.nodes[2*n+1].id = nodes[n].id;
         g.nodes[2*n+1].head = -1;
     }
-    for(int i = 0; i < number_of_edges; i++) //拆分边
+    for(int i = 0; i < number_of_edges; i++) // Split edges
     {
         g.edges[2*i].x = 2*edges[i].x + 1;
         g.edges[2*i].y = 2*edges[i].y;
@@ -201,7 +201,7 @@ Graph Graph::flow_graph()
         g.edges[2*i + 1].next = g.nodes[g.edges[2*i + 1].x].head;
         g.nodes[g.edges[2*i + 1].x].head = 2*i + 1;
     }
-    for(int n = 0; n < number_of_nodes; n++) //添加节点内的边
+    for(int n = 0; n < number_of_nodes; n++) // Add edges within nodes
     {
         int i = number_of_edges + n;
         g.edges[2*i].x = 2*n;
@@ -220,13 +220,13 @@ Graph Graph::flow_graph()
     return g;
 }
 
-bool Graph::bfs(int s, int t) //s为源点, t为汇点
+bool Graph::bfs(int s, int t) // s is source, t is sink
 {
     queue<int> Q;
     while (!Q.empty())
         Q.pop();
     //memset(depth, 0, sizeof(depth));
-    for(int i = 0; i < number_of_nodes; i++) //设置深度，不能用memset因为是指针
+    for(int i = 0; i < number_of_nodes; i++) // Set depth, cannot use memset as it's a pointer
     {
         depth[i] = 0;
     }
@@ -253,22 +253,22 @@ bool Graph::bfs(int s, int t) //s为源点, t为汇点
 
 int Graph::dfs(int u, int t, int flow)
 {
-    if(u == t) //到达汇点， 返回
+    if(u == t) // Reached sink, return
         return flow;
     for(int i = nodes[u].head; i != -1; i = edges[i].next)
     {
-        if ((depth[edges[i].y]==depth[u]+1)&&(edges[i].capacity != 0))//注意这里要满足分层图和残量不为0两个条件
+        if ((depth[edges[i].y]==depth[u]+1)&&(edges[i].capacity != 0)) // Must satisfy both layered graph and residual capacity > 0
         {
-            int di = dfs(edges[i].y, t, min(flow, edges[i].capacity));//向下增广
-            if (di>0)//若增广成功
+            int di = dfs(edges[i].y, t, min(flow, edges[i].capacity)); // Augment downward
+            if (di>0) // If augmentation successful
             {
-                edges[i].capacity -= di;//正向边减
-                edges[i^1].capacity += di; //反向边加
-                return di;//向上传递
+                edges[i].capacity -= di; // Decrease forward edge
+                edges[i^1].capacity += di; // Increase reverse edge
+                return di; // Propagate upward
             }
         }
     }
-    return 0;//否则说明没有增广路，返回0
+    return 0; // No augmenting path found, return 0
 }
 
 int Graph::max_flow(int i, int j)
@@ -333,10 +333,10 @@ vector<int> Graph::st_minimum_cut(int i, int j)
     // {
     //     cout << g.edges[i].x << g.edges[i].y << g.edges[i].capacity << endl;
     // }
-    vector<int> G2; //在残流网络能连到汇点的
-    vector<int> G1; //在残流网络不能连到汇点的
-    vector<int> temp; //临时储存
-    vector<int> cut; //最小点割集
+    vector<int> G2; // Nodes that can reach sink in residual network
+    vector<int> G1; // Nodes that cannot reach sink in residual network
+    vector<int> temp; // Temporary storage
+    vector<int> cut; // Minimum vertex cut set
     for(int i = 0; i < g.number_of_nodes; i++){
         if(g.bfs(i, t))
             G2.push_back(i);
@@ -368,18 +368,18 @@ Graph Graph::subgraph(vector<int> C)
     Graph g;
     g.number_of_nodes = C.size();
     g.number_of_edges = 0;
-    //生成节点
+    // Generate nodes
     for(int i = 0; i < g.number_of_nodes; i++)
     {
         g.nodes[i].id = C[i];
         g.nodes[i].head = -1;
     }
-    //生成边
+    // Generate edges
     for(int i = 0; i < number_of_edges; i++)
     {
         int x = nodes[edges[i].x].id;
         int y = nodes[edges[i].y].id;
-        if(v_has(C, x) && v_has(C, y)) //边的两端都在C中
+        if(v_has(C, x) && v_has(C, y)) // Both ends of edge are in C
         {
             g.add_edge(x, y);
         }
@@ -429,7 +429,7 @@ Graph Graph::reverse()
         g.nodes[i].id = nodes[i].id;
         g.nodes[i].head = -1;
     }
-    //反转边
+    // Reverse edges
     for(int i = 0; i < number_of_edges; i++)
     {
         int x = edges[i].x;
@@ -453,7 +453,7 @@ inline size_t lengthof(const T (& arr)[N][2])
 }
 
 
-Graph rdgraph(int N, int r, int range, int i) //在range的范围内产生节点为N连通度为k的图
+Graph rdgraph(int N, int r, int range, int i) // Generate connected graph with N nodes within range
 {
     while(1)
     {
@@ -529,7 +529,7 @@ void genegraph(int N, int r, int range, int i)
 }
 
 
-void genegraphWithDegree(int N, int type){ //type分三类， 0 是smaller， 1是equal， 2是greater
+void genegraphWithDegree(int N, int type){ // type: 0=smaller, 1=equal, 2=greater
 
     string graphType;
     int degree;
@@ -539,12 +539,12 @@ void genegraphWithDegree(int N, int type){ //type分三类， 0 是smaller， 1�
         case 2: graphType = "greater";  degree = N*3/4; break;
     }
 
-    // 使用新的输出路径（相对于项目根目录）
+    // Use new output path (relative to project root)
     string savepath = "./output/graphs/" + graphType + "/N=" + to_string(N) + "/";
     filesystem::create_directories(savepath);
 
     int t = 100;
-    for(int i = 0; i < t; i++) //生成t张图
+    for(int i = 0; i < t; i++) // Generate t graphs
     {
         int z = time(0);
         srand((i+1) * z);
@@ -555,7 +555,7 @@ void genegraphWithDegree(int N, int type){ //type分三类， 0 是smaller， 1�
             vector<int> outNeighbor = G.outneighbors(x);
             outNeighbor.push_back(x);
             vector<int> tmp = v_diff(allNodes, outNeighbor);
-            if(tmp.size() == 0) continue; //该节点不能再加边了
+            if(tmp.size() == 0) continue; // Node cannot add more edges
             int y = rand()%(tmp.size());
             y = tmp[y];
             G.add_edge(x, y);
@@ -571,16 +571,16 @@ void genegraphWithDegree(int N, int type){ //type分三类， 0 是smaller， 1�
 
 int main(){
     cout << "====================================================" << endl;
-    cout << "图数据生成程序" << endl;
+    cout << "Graph Data Generation Program" << endl;
     cout << "====================================================" << endl;
 
-    // 模式选择：1=单位圆盘随机图 (R=250), 2=特定度数图 (smaller/equal/greater)
+    // Mode selection: 1=Unit disk random graph (R=250), 2=Specific degree graph (smaller/equal/greater)
     int mode = 1;
 
-    cout << "\n选择生成模式:" << endl;
-    cout << "  1: 单位圆盘随机图 (ex1~ex7)" << endl;
-    cout << "  2: 特定度数图 (alpha扫描/Figure3)" << endl;
-    cout << "输入模式 (默认1): ";
+    cout << "\nSelect generation mode:" << endl;
+    cout << "  1: Unit disk random graph (ex1~ex7)" << endl;
+    cout << "  2: Specific degree graph (alpha scanning/Figure3)" << endl;
+    cout << "Enter mode (default 1): ";
 
     string input;
     getline(cin, input);
@@ -588,14 +588,14 @@ int main(){
         mode = stoi(input);
     }
 
-    const int RANGE = 500;      // 500×500 平面
+    const int RANGE = 500;      // 500×500 plane
 
     if (mode == 1) {
-        // ===== 模式1: 生成单位圆盘随机几何图 =====
-        cout << "\n[模式1] 生成单位圆盘随机几何图 (R=250)" << endl;
-        cout << "参数: N=10~100, 每个N生成100个样本" << endl;
+        // ===== Mode 1: Generate Unit Disk Random Geometric Graph =====
+        cout << "\n[Mode 1] Generate Unit Disk Random Geometric Graph (R=250)" << endl;
+        cout << "Parameters: N=10~100, 100 samples per N" << endl;
 
-        const int R = 250;          // 通信半径
+        const int R = 250;          // Communication radius
         const int T_FULL = 100;     // 100 samples
 
         for (int N = 10; N <= 100; N += 10) {
@@ -606,7 +606,7 @@ int main(){
                 genegraph(N, R, RANGE, i);
                 cout << "  ✓ N=" << N << " net" << i << endl;
             }
-            cout << "N=" << N << ": 完成" << endl;
+            cout << "N=" << N << ": Complete" << endl;
         }
 
     } else if (mode == 2) {
@@ -617,12 +617,12 @@ int main(){
         genegraphWithDegree(100, 1);
         genegraphWithDegree(100, 2);
     } else {
-        cout << "未知模式: " << mode << endl;
+        cout << "Unknown mode: " << mode << endl;
         return 1;
     }
 
     cout << "\n====================================================" << endl;
-    cout << "✓ 图生成完成！" << endl;
+    cout << "✓ Graph Generation Complete!" << endl;
     cout << "====================================================" << endl;
     return 0;
 }

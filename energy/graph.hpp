@@ -54,7 +54,7 @@ public:
         number_of_nodes = 0;
         number_of_edges = 0;
     }
-    Graph(int N, int M) //生成N个节点，M条边的网络
+    Graph(int N, int M) // Generate network with N nodes and M edges
     {
         number_of_nodes = N;
         number_of_edges = M;
@@ -113,42 +113,42 @@ public:
         delete[] nodes;
         delete[] edges;
     }
-    //无特殊说明，输入输出都是节点的地址，不是id
-    vector<int> outneighbors(int i); //输出出节点的集合
-    vector<int> inneighbors(int i); //输出入邻居的集合
-    vector<int> bineighbors(int i); //双向邻居
-    vector<int> all_nodes(); //返回所有节点的id集合
-    int id_to_address(int i); //将id转换为地址
-    bool is_neighbor(int i, int j); //节点i，j是否相邻
-    bool is_neighbor_byid(int i, int j); //节点(id)i，j是否相邻
-    bool is_connected(); //判断是否连通
-    bool is_strong_connected(); //判断G是否强连通
-    bool st_is_k_connected(int s, int t, int k); //节点i,j是否k强连通
-    bool st_is_k_connected_byid(int s, int t, int k); //节点(id)i,j是否k强连通    
-    bool is_k_connected(int k); //判断g是否k强连通
-    int max_flow(int i, int j); //利用dinic算法计算(id)i,j最大流
-    bool bfs(int s, int t); //dinic算法中的分层部分,若s不能到达t，返回false
-    int dfs(int s, int t, int flow); //利用深度搜索查找增广路
+    // Unless otherwise specified, input and output are node addresses, not IDs
+    vector<int> outneighbors(int i); // Output the set of out-neighbors
+    vector<int> inneighbors(int i); // Output the set of in-neighbors
+    vector<int> bineighbors(int i); // Bidirectional neighbors
+    vector<int> all_nodes(); // Return the set of all node IDs
+    int id_to_address(int i); // Convert ID to address
+    bool is_neighbor(int i, int j); // Check if nodes i, j are adjacent
+    bool is_neighbor_byid(int i, int j); // Check if nodes (by ID) i, j are adjacent
+    bool is_connected(); // Check if the graph is connected
+    bool is_strong_connected(); // Check if G is strongly connected
+    bool st_is_k_connected(int s, int t, int k); // Check if nodes i, j are k-connected
+    bool st_is_k_connected_byid(int s, int t, int k); // Check if nodes (by ID) i, j are k-connected
+    bool is_k_connected(int k); // Check if g is k-connected
+    int max_flow(int i, int j); // Calculate maximum flow between (ID) i, j using Dinic's algorithm
+    bool bfs(int s, int t); // Layering part of Dinic's algorithm, returns false if s cannot reach t
+    int dfs(int s, int t, int flow); // Use depth-first search to find augmenting path
     void write(string path);
     void read(string path);
     void copy(Graph G); 
     vector<int> st_minimum_cut(int i, int j);
-    vector<vector<int>> find_all_k_block(int k); //找到所有k-block
-    vector<int> find_k_block(int k); //找到一个k-block
-    vector<int> find_k_block_contain(int k, vector<int> B); //找到包含B的k-block
-    vector<int> G2(vector<int> separator, int i); //去除分离集后能连到i的集合
-    vector<int> Tpath(vector<int> D, vector<int> U, 
-    vector<int> separator, int t); //返回T-path的id集合
-    vector<int> myTpath(vector<int> D, vector<int> U, 
+    vector<vector<int>> find_all_k_block(int k); // Find all k-blocks
+    vector<int> find_k_block(int k); // Find one k-block
+    vector<int> find_k_block_contain(int k, vector<int> B); // Find k-block containing B
+    vector<int> G2(vector<int> separator, int i); // Set of nodes that can connect to i after removing separator
+    vector<int> Tpath(vector<int> D, vector<int> U,
+    vector<int> separator, int t); // Return the set of IDs in T-path
+    vector<int> myTpath(vector<int> D, vector<int> U,
     vector<int> separator, vector<int> C);
-    vector<int> path(int s, int t); //返回最短路径的id集合，若不连通，则返回大小为1的集合（首节点）
-    vector<int> find_k_path(int s, int t, int k); //返回k条不相交路径的集合
-    Graph flow_graph(); //生成用来计算最大流的网络
-    Graph subgraph(vector<int> C); //根据集合C生成子图
-    Graph sepa_sub(vector<int> S); //删除集合S生成的子图
-    Graph reverse(); //生成反向网络
-    separation a_separation(vector<int> separator, int t); 
-    double avepath_throu_T(vector<int> T); //返回节点间通过T进行路由的平均路径长度
+    vector<int> path(int s, int t); // Return the set of IDs in shortest path, if not connected, return set of size 1 (start node)
+    vector<int> find_k_path(int s, int t, int k); // Return set of k disjoint paths
+    Graph flow_graph(); // Generate network for computing maximum flow
+    Graph subgraph(vector<int> C); // Generate subgraph based on set C
+    Graph sepa_sub(vector<int> S); // Generate subgraph by removing set S
+    Graph reverse(); // Generate reverse network
+    separation a_separation(vector<int> separator, int t);
+    double avepath_throu_T(vector<int> T); // Return average path length between nodes routing through T
     int degree(int i);
 };
 
@@ -190,14 +190,14 @@ int Graph::id_to_address(int i)
 Graph Graph::flow_graph()
 {
     Graph g(2*number_of_nodes, 2*(number_of_nodes + number_of_edges));
-    for(int n = 0; n < number_of_nodes; n++) //拆分节点,2n是入节点，2n+1是出节点
+    for(int n = 0; n < number_of_nodes; n++) // Split nodes, 2n is in-node, 2n+1 is out-node
     {
         g.nodes[2*n].id = nodes[n].id;
         g.nodes[2*n].head = -1;
         g.nodes[2*n+1].id = nodes[n].id;
         g.nodes[2*n+1].head = -1;
     }
-    for(int i = 0; i < number_of_edges; i++) //拆分边
+    for(int i = 0; i < number_of_edges; i++) // Split edges
     {
         g.edges[2*i].x = 2*edges[i].x + 1;
         g.edges[2*i].y = 2*edges[i].y;
@@ -211,7 +211,7 @@ Graph Graph::flow_graph()
         g.edges[2*i + 1].next = g.nodes[g.edges[2*i + 1].x].head;
         g.nodes[g.edges[2*i + 1].x].head = 2*i + 1;
     }
-    for(int n = 0; n < number_of_nodes; n++) //添加节点内的边
+    for(int n = 0; n < number_of_nodes; n++) // Add edges inside nodes
     {
         int i = number_of_edges + n;
         g.edges[2*i].x = 2*n;
@@ -230,13 +230,13 @@ Graph Graph::flow_graph()
     return g;
 }
 
-bool Graph::bfs(int s, int t) //s为源点, t为汇点
+bool Graph::bfs(int s, int t) // s is source, t is sink
 {
     queue<int> Q;
     while (!Q.empty())
         Q.pop();
     //memset(depth, 0, sizeof(depth));
-    for(int i = 0; i < number_of_nodes; i++) //设置深度，不能用memset因为是指针
+    for(int i = 0; i < number_of_nodes; i++) // Set depth, cannot use memset because it's a pointer
     {
         depth[i] = 0;
     }
@@ -263,22 +263,22 @@ bool Graph::bfs(int s, int t) //s为源点, t为汇点
 
 int Graph::dfs(int u, int t, int flow)
 {
-    if(u == t) //到达汇点， 返回
+    if(u == t) // Reached sink, return
         return flow;
     for(int i = nodes[u].head; i != -1; i = edges[i].next)
     {
-        if ((depth[edges[i].y]==depth[u]+1)&&(edges[i].capacity != 0))//注意这里要满足分层图和残量不为0两个条件
+        if ((depth[edges[i].y]==depth[u]+1)&&(edges[i].capacity != 0))// Note: must satisfy both layered graph and non-zero residual capacity
         {
-            int di = dfs(edges[i].y, t, min(flow, edges[i].capacity));//向下增广
-            if (di>0)//若增广成功
+            int di = dfs(edges[i].y, t, min(flow, edges[i].capacity));// Augment downward
+            if (di>0)// If augmentation successful
             {
-                edges[i].capacity -= di;//正向边减
-                edges[i^1].capacity += di; //反向边加
-                return di;//向上传递
+                edges[i].capacity -= di;// Decrease forward edge
+                edges[i^1].capacity += di; // Increase reverse edge
+                return di;// Propagate upward
             }
         }
     }
-    return 0;//否则说明没有增广路，返回0
+    return 0;// Otherwise, no augmenting path, return 0
 }
 
 int Graph::max_flow(int i, int j)
@@ -401,10 +401,10 @@ vector<int> Graph::st_minimum_cut(int i, int j)
     // {
     //     cout << g.edges[i].x << g.edges[i].y << g.edges[i].capacity << endl;
     // }
-    vector<int> G2; //在残流网络能连到汇点的
-    vector<int> G1; //在残流网络不能连到汇点的
-    vector<int> temp; //临时储存
-    vector<int> cut; //最小点割集
+    vector<int> G2; // Nodes that can reach sink in residual network
+    vector<int> G1; // Nodes that cannot reach sink in residual network
+    vector<int> temp; // Temporary storage
+    vector<int> cut; // Minimum vertex cut set
     for(int i = 0; i < g.number_of_nodes; i++){
         if(g.bfs(i, t))
             G2.push_back(i);
@@ -451,19 +451,19 @@ Graph Graph::subgraph(vector<int> C)
     Graph g;
     g.number_of_nodes = C.size();
     g.number_of_edges = 0;
-    //生成节点
+    // Generate nodes
     for(int i = 0; i < g.number_of_nodes; i++)
     {
         g.nodes[i].id = C[i];
         g.nodes[i].head = -1;
     }
-    //生成边
+    // Generate edges
     for(int i = 0; i < number_of_edges; i++)
     {
         int x = nodes[edges[i].x].id;
         int y = nodes[edges[i].y].id;
 
-        if(v_has(C, x) && v_has(C, y)) //边的两端都在C中
+        if(v_has(C, x) && v_has(C, y)) // Both endpoints of edge are in C
         {
             g.add_edge(x, y);
         }
@@ -482,7 +482,7 @@ Graph Graph::reverse()
         g.nodes[i].id = nodes[i].id;
         g.nodes[i].head = -1;
     }
-    //反转边
+    // Reverse edges
     for(int i = 0; i < number_of_edges; i++)
     {
         int x = edges[i].x;
@@ -506,7 +506,7 @@ inline size_t lengthof(const T (& arr)[N][2])
 }
 
 
-Graph rdgraph(int N, int k, int rmin, int rmax, int range, int i) //在range的范围内产生节点为N连通度为k的图
+Graph rdgraph(int N, int k, int rmin, int rmax, int range, int i) // Generate graph with N nodes and connectivity k within range
 {
     while(1)
     {
@@ -565,8 +565,8 @@ void Graph::read(string path)
 {
     ifstream net(path, ios::in);
     if(!net) cout << "open error" << endl;
-    int N; //节点数
-    int M; //边数
+    int N; // Number of nodes
+    int M; // Number of edges
     net >> N;
     net >> M;
     number_of_nodes = N;
@@ -603,7 +603,7 @@ void genegraph(int N, int k, int rmin, int rmax, int range, int i)
     // if (0 != access(savepath.c_str(), 0))
     // {
     //     cout << 1 << endl;
-    //     cout << mkdir(savepath.c_str()) << endl;   // 返回 0 表示创建成功，-1 表示失败
+    //     cout << mkdir(savepath.c_str()) << endl;   // Returns 0 for success, -1 for failure
     // }
 }
 
@@ -783,9 +783,9 @@ separation Graph::a_separation(vector<int> s, int t)
 {
 
     Graph tempG = subgraph(v_diff(all_nodes(), s));
-    vector<int> G2; //连到t的
+    vector<int> G2; // Nodes connected to t
     G2.push_back(t);
-    vector<int> G1; //连不到t的
+    vector<int> G1; // Nodes not connected to t
     for(int i = 0; i < tempG.number_of_nodes; i++)
     {
         if(tempG.nodes[i].id == t) continue;
@@ -857,7 +857,7 @@ vector<int> Graph::myTpath(vector<int> D, vector<int> U, vector<int> separator, 
 vector<vector<int>> Graph::find_all_k_block(int k)
 {
     int flow[number_of_nodes][number_of_nodes];
-    int s_adress[number_of_nodes][number_of_nodes]; //指向separation的地址
+    int s_adress[number_of_nodes][number_of_nodes]; // Address pointing to separation
     int cnt=0;
     vector<separation> all_s;
     for(int i=0; i < number_of_nodes; i++)
@@ -868,7 +868,7 @@ vector<vector<int>> Graph::find_all_k_block(int k)
             {
                 flow[i][j] = 1;
             }
-            else //构造一个separation
+            else // Construct a separation
             {
                 vector<int> cut = st_minimum_cut(nodes[i].id, nodes[j].id);
                 if(cut.size() >= k) flow[i][j] = 1;

@@ -798,7 +798,7 @@ int sim(Graph G, int alg, int type)
     // getchar();
     return size;
     // return size;
-    // int t = 0; //时间
+    // int t = 0; //time
     // while(1)
     // {
     //     t += 1;
@@ -849,33 +849,33 @@ int simulate(int N, int t1, int t2, int type)
     return 0;
 }
 
-void ex1(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
+void ex1(int Nmin, int Nmax, int t, int R) //t: number of graphs for this node count
 {
-    string resultpath = "./output/ex1/"; //存储结果的文件夹
-    for(int mod = 0; mod <= 1; mod++) //两种耗能模式
+    string resultpath = "./output/ex1/"; //directory to store results
+    for(int mod = 0; mod <= 1; mod++) //two types of energy consumption modes
     {
-        for(int N = Nmin; N <= Nmax; N+=10) //节点数，即横坐标
+        for(int N = Nmin; N <= Nmax; N+=10) //node count, i.e., x-axis
         {
             cout << "N=" << N << "start" << endl;
-            int result[2][t]; //存储两个算法在某个图下的结果
+            int result[2][t]; //store results of two algorithms on one graph
             #pragma omp parallel for
-            for(int i = 0; i < t; i++) //循环次数，即一个节点的图的数量
+            for(int i = 0; i < t; i++) //number of iterations, i.e., the number of graphs for one node count
             {
-                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //读图地址
+                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //path to read graph
                 Graph G;
                 G.read(readpath);
-                for(int alg = 0; alg < 2; alg++) //三种算法
+                for(int alg = 0; alg < 2; alg++) //two algorithms
                 {
                     double energy[N];
                     int sum = 0;
                     int z = (int)time(NULL);
-                    srand(z);   
+                    srand(z);
                     for(int j = 0; j < N; j++)
                     {
-                        energy[j] = 100; //设定初始能量
+                        energy[j] = 100; //set initial energy
                     }
                     //int size = 0;
-                    int livetime = 0; //生存时间
+                    int livetime = 0; //lifetime
                     while(1)
                     {
                         int flag = 1;
@@ -895,7 +895,7 @@ void ex1(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
                         //cout << D.size() << endl;
                         for(int j:D)
                         {
-                            energy[j] -= consume(mod); //按不同模式消耗能量
+                            energy[j] -= consume(mod); //consume energy according to different modes
                         }
                         livetime++;
                     }
@@ -907,42 +907,42 @@ void ex1(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
             if(!f) cout << "write error" << endl;
             for(int i = 0; i < t; i++)
             {
-                f << result[0][i] << " " << result[1][i] << endl; //输出结果，一个mode下的一个N占具一个txt
+                f << result[0][i] << " " << result[1][i] << endl; //output results, one txt file for one N under one mode
             }
             f.close();
         }
     }
 }
 
-//实验2：
-//两种算法在不同初始能量下的生存时间
-void ex2(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
+//Experiment 2:
+//Lifetime of two algorithms under different initial energy conditions
+void ex2(int Nmin, int Nmax, int t, int R) //t: number of graphs for this node count
 {
-    string resultpath = "./output/ex2/"; //存储结果的文件夹
-    for(int mod = 0; mod <= 1; mod++) //1种耗能模式
+    string resultpath = "./output/ex2/"; //directory to store results
+    for(int mod = 0; mod <= 1; mod++) //one type of energy consumption mode
     {
-        for(int N = Nmin; N <= Nmax; N+=10) //节点数，即横坐标
+        for(int N = Nmin; N <= Nmax; N+=10) //node count, i.e., x-axis
         {
             cout << "N=" << N << "start" << endl;
-            int result[2][t]; //存储两个算法在某个图下的结果
+            int result[2][t]; //store results of two algorithms on one graph
             #pragma omp parallel for
-            for(int i = 0; i < t; i++) //循环次数，即一个节点的图的数量
+            for(int i = 0; i < t; i++) //number of iterations, i.e., the number of graphs for one node count
             {
-                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //读图地址
+                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //path to read graph
                 Graph G;
                 G.read(readpath);
-                for(int alg = 0; alg < 2; alg++) //三种算法
+                for(int alg = 0; alg < 2; alg++) //two algorithms
                 {
                     double energy[N];
                     int sum = 0;
                     int z = (int)time(NULL);
-                    srand(z);   
+                    srand(z);
                     for(int j = 0; j < N; j++)
                     {
-                        energy[j] = rand()%50 + 50; //设定初始能量, 在[50, 100]
+                        energy[j] = rand()%50 + 50; //set initial energy in [50, 100]
                     }
                     //int size = 0;
-                    int livetime = 0; //生存时间
+                    int livetime = 0; //lifetime
                     while(1)
                     {
                         int flag = 1;
@@ -962,7 +962,7 @@ void ex2(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
                         //cout << D.size() << endl;
                         for(int j:D)
                         {
-                            energy[j] -= consume(mod); //按不同模式消耗能量
+                            energy[j] -= consume(mod); //consume energy according to different modes
                         }
                         livetime++;
                     }
@@ -974,7 +974,7 @@ void ex2(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
             if(!f) cout << "write error" << endl;
             for(int i = 0; i < t; i++)
             {
-                f << result[0][i] << " " << result[1][i] << endl; //输出结果，一个mode下的一个N占具一个txt
+                f << result[0][i] << " " << result[1][i] << endl; //output results, one txt file for one N under one mode
             }
             f.close();
         }
@@ -982,35 +982,35 @@ void ex2(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
 }
 
 
-//实验3：
-//CDS size 对比
-void ex3(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
+//Experiment 3:
+//CDS size comparison
+void ex3(int Nmin, int Nmax, int t, int R) //t: number of graphs for this node count
 {
-    string resultpath = "./output/ex3/"; //存储结果的文件夹
-    for(int mod = 0; mod <= 1; mod++) //1种耗能模式
+    string resultpath = "./output/ex3/"; //directory to store results
+    for(int mod = 0; mod <= 1; mod++) //one type of energy consumption mode
     {
-        for(int N = Nmin; N <= Nmax; N+=10) //节点数，即横坐标
+        for(int N = Nmin; N <= Nmax; N+=10) //node count, i.e., x-axis
         {
             cout << "N=" << N << "start" << endl;
-            int result[2][t]; //存储两个算法在某个图下的结果
+            int result[2][t]; //store results of two algorithms on one graph
             #pragma omp parallel for
-            for(int i = 0; i < t; i++) //循环次数，即一个节点的图的数量
+            for(int i = 0; i < t; i++) //number of iterations, i.e., the number of graphs for one node count
             {
-                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //读图地址
+                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //path to read graph
                 Graph G;
                 G.read(readpath);
-                for(int alg = 0; alg < 2; alg++) //三种算法
+                for(int alg = 0; alg < 2; alg++) //two algorithms
                 {
                     double energy[N];
                     int sum = 0;
                     int z = (int)time(NULL);
-                    srand(z);   
+                    srand(z);
                     for(int j = 0; j < N; j++)
                     {
-                        energy[j] = 100; //设定初始能量
+                        energy[j] = 100; //set initial energy
                     }
                     int size = 0;
-                    int livetime = 0; //生存时间
+                    int livetime = 0; //lifetime
                     while(1)
                     {
                         int flag = 1;
@@ -1031,7 +1031,7 @@ void ex3(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
                         size += D.size();
                         for(int j:D)
                         {
-                            energy[j] -= consume(mod); //按不同模式消耗能量
+                            energy[j] -= consume(mod); //consume energy according to different modes
                         }
                         livetime++;
                     }
@@ -1043,7 +1043,7 @@ void ex3(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
             if(!f) cout << "write error" << endl;
             for(int i = 0; i < t; i++)
             {
-                f << result[0][i] << " " << result[1][i] << endl; //输出结果，一个mode下的一个N占具一个txt
+                f << result[0][i] << " " << result[1][i] << endl; //output results, one txt file for one N under one mode
             }
             f.close();
         }
@@ -1053,36 +1053,36 @@ void ex3(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
 
 
 
-//实验4：
-//time
-void ex4(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
+//Experiment 4:
+//Runtime analysis
+void ex4(int Nmin, int Nmax, int t, int R) //t: number of graphs for this node count
 {
-    string resultpath = "./output/ex4/"; //存储结果的文件夹
-    for(int mod = 0; mod <= 0; mod++) //1种耗能模式
+    string resultpath = "./output/ex4/"; //directory to store results
+    for(int mod = 0; mod <= 0; mod++) //one type of energy consumption mode
     {
-        for(int N = Nmin; N <= Nmax; N+=10) //节点数，即横坐标
+        for(int N = Nmin; N <= Nmax; N+=10) //node count, i.e., x-axis
         {
             cout << "N=" << N << "start" << endl;
-            int result[2][t]; //存储两个算法在某个图下的结果
+            int result[2][t]; //store results of two algorithms on one graph
             #pragma omp parallel for
-            for(int i = 0; i < t; i++) //循环次数，即一个节点的图的数量
+            for(int i = 0; i < t; i++) //number of iterations, i.e., the number of graphs for one node count
             {
-                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //读图地址
+                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //path to read graph
                 Graph G;
                 G.read(readpath);
-                for(int alg = 0; alg < 2; alg++) //三种算法
+                for(int alg = 0; alg < 2; alg++) //two algorithms
                 {
                     double energy[N];
                     int sum = 0;
                     int z = (int)time(NULL);
-                    srand(z);   
+                    srand(z);
                     for(int j = 0; j < N; j++)
                     {
-                        energy[j] = 100; //设定初始能量
+                        energy[j] = 100; //set initial energy
                     }
                     int runtime = 0;
                     int size = 0;
-                    int livetime = 0; //生存时间
+                    int livetime = 0; //lifetime
                     time_t starttime = time(0);
                     while(1)
                     {
@@ -1105,7 +1105,7 @@ void ex4(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
                         size += D.size();
                         for(int j:D)
                         {
-                            energy[j] -= consume(mod); //按不同模式消耗能量
+                            energy[j] -= consume(mod); //consume energy according to different modes
                         }
                         livetime++;
                     }
@@ -1119,7 +1119,7 @@ void ex4(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
             if(!f) cout << "write error" << endl;
             for(int i = 0; i < t; i++)
             {
-                f << result[0][i] << " " << result[1][i] << endl; //输出结果，一个mode下的一个N占具一个txt
+                f << result[0][i] << " " << result[1][i] << endl; //output results, one txt file for one N under one mode
             }
             f.close();
         }
@@ -1128,40 +1128,40 @@ void ex4(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
 
 
 
-//实验5：
-//能量均衡性
-void ex5(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
+//Experiment 5:
+//Energy balance analysis
+void ex5(int Nmin, int Nmax, int t, int R) //t: number of graphs for this node count
 {
-    string resultpath = "./output/ex5/"; //存储结果的文件夹
-    for(int mod = 0; mod <= 0; mod++) //1种耗能模式
+    string resultpath = "./output/ex5/"; //directory to store results
+    for(int mod = 0; mod <= 0; mod++) //one type of energy consumption mode
     {
-        for(int N = Nmin; N <= Nmax; N+=10) //节点数，即横坐标
+        for(int N = Nmin; N <= Nmax; N+=10) //node count, i.e., x-axis
         {
             cout << "N=" << N << "start" << endl;
-            int result[2][t]; //存储两个算法在某个图下的结果
+            int result[2][t]; //store results of two algorithms on one graph
             #pragma omp parallel for
-            for(int i = 0; i < t; i++) //循环次数，即一个节点的图的数量
+            for(int i = 0; i < t; i++) //number of iterations, i.e., the number of graphs for one node count
             {
-                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //读图地址
+                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //path to read graph
                 Graph G;
                 G.read(readpath);
-                for(int alg = 0; alg < 2; alg++) //两种算法
+                for(int alg = 0; alg < 2; alg++) //two algorithms
                 {
                     double energy[N];
                     int sum = 0;
                     int z = (int)time(NULL);
-                    srand(z);   
+                    srand(z);
                     for(int j = 0; j < N; j++)
                     {
-                        energy[j] = 100; //设定初始能量
+                        energy[j] = 100; //set initial energy
                     }
                     int runtime = 0;
                     int size = 0;
-                    int livetime = 0; //生存时间
-                    double totalEnergy = 0; //能量总和
-                    double averEnergy = 0; //平均能量
-                    double varEnergy = 0; //标准方差
-                    vector<double> vars; //储存各个时间帧的方差
+                    int livetime = 0; //lifetime
+                    double totalEnergy = 0; //total energy
+                    double averEnergy = 0; //average energy
+                    double varEnergy = 0; //standard deviation
+                    vector<double> vars; //store variance of each time frame
                     time_t starttime = time(0);
                     while(1)
                     {
@@ -1169,7 +1169,7 @@ void ex5(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
                         int flag = 1;
                         for(int j = 0; j < N; j++)
                         {
-                            totalEnergy += energy[j]; //计算能量综合
+                            totalEnergy += energy[j]; //calculate total energy
                             if(energy[j] <= 0) 
                             {
                                 //cout << i << endl;
@@ -1180,9 +1180,9 @@ void ex5(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
 
                         if(!flag) break;
 
-                        averEnergy = totalEnergy / N; //计算平均能量
+                        averEnergy = totalEnergy / N; //calculate average energy
 
-                        //计算标准方差
+                        //calculate standard deviation
                         for(int j = 0; j < N; j++){
                             varEnergy += ((double)energy[j] - averEnergy) * ((double)energy[j] - averEnergy);
                         }
@@ -1199,7 +1199,7 @@ void ex5(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
                         size += D.size();
                         for(int j:D)
                         {
-                            energy[j] -= consume(mod); //按不同模式消耗能量
+                            energy[j] -= consume(mod); //consume energy according to different modes
                         }                        
                         livetime++;
                     }
@@ -1220,7 +1220,7 @@ void ex5(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
             // if(!f) cout << "write error" << endl;
             // for(int i = 0; i < t; i++)
             // {
-            //     f << result[0][i] << " " << result[1][i] << endl; //输出结果，一个mode下的一个N占具一个txt
+            //     f << result[0][i] << " " << result[1][i] << endl; //output results, one txt file for one N under one mode
             // }
             // f.close();
         }
@@ -1228,35 +1228,35 @@ void ex5(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
 }
 
 
-//实验6：
-//CDS size 对比 基于不均能量分布
-void ex6(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
+//Experiment 6:
+//CDS size comparison based on non-uniform energy distribution
+void ex6(int Nmin, int Nmax, int t, int R) //t: number of graphs for this node count
 {
-    string resultpath = "./output/ex6/"; //存储结果的文件夹
-    for(int mod = 0; mod <= 1; mod++) //1种耗能模式
+    string resultpath = "./output/ex6/"; //directory to store results
+    for(int mod = 0; mod <= 1; mod++) //one type of energy consumption mode
     {
-        for(int N = Nmin; N <= Nmax; N+=10) //节点数，即横坐标
+        for(int N = Nmin; N <= Nmax; N+=10) //node count, i.e., x-axis
         {
             cout << "N=" << N << "start" << endl;
-            int result[2][t]; //存储两个算法在某个图下的结果
+            int result[2][t]; //store results of two algorithms on one graph
             #pragma omp parallel for
-            for(int i = 0; i < t; i++) //循环次数，即一个节点的图的数量
+            for(int i = 0; i < t; i++) //number of iterations, i.e., the number of graphs for one node count
             {
-                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //读图地址
+                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //path to read graph
                 Graph G;
                 G.read(readpath);
-                for(int alg = 0; alg < 2; alg++) //三种算法
+                for(int alg = 0; alg < 2; alg++) //two algorithms
                 {
                     double energy[N];
                     int sum = 0;
                     int z = (int)time(NULL);
-                    srand(z);   
+                    srand(z);
                     for(int j = 0; j < N; j++)
                     {
-                        energy[j] = rand()%50 + 50; //设定初始能量, 在[50, 100]
+                        energy[j] = rand()%50 + 50; //set initial energy in [50, 100]
                     }
                     int size = 0;
-                    int livetime = 0; //生存时间
+                    int livetime = 0; //lifetime
                     while(1)
                     {
                         int flag = 1;
@@ -1277,7 +1277,7 @@ void ex6(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
                         size += D.size();
                         for(int j:D)
                         {
-                            energy[j] -= consume(mod); //按不同模式消耗能量
+                            energy[j] -= consume(mod); //consume energy according to different modes
                         }
                         livetime++;
                     }
@@ -1289,7 +1289,7 @@ void ex6(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
             if(!f) cout << "write error" << endl;
             for(int i = 0; i < t; i++)
             {
-                f << result[0][i] << " " << result[1][i] << endl; //输出结果，一个mode下的一个N占具一个txt
+                f << result[0][i] << " " << result[1][i] << endl; //output results, one txt file for one N under one mode
             }
             f.close();
         }
@@ -1297,35 +1297,35 @@ void ex6(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
 }
 
 
-//实验7：
-//每个时间窗口变化的节点个数
-void ex7(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
+//Experiment 7:
+//Number of node changes in each time window
+void ex7(int Nmin, int Nmax, int t, int R) //t: number of graphs for this node count
 {
-    string resultpath = "./output/ex7/"; //存储结果的文件夹
-    for(int mod = 1; mod <= 1; mod++) //1种耗能模式
+    string resultpath = "./output/ex7/"; //directory to store results
+    for(int mod = 1; mod <= 1; mod++) //one type of energy consumption mode
     {
-        for(int N = Nmin; N <= Nmax; N+=10) //节点数，即横坐标
+        for(int N = Nmin; N <= Nmax; N+=10) //node count, i.e., x-axis
         {
             cout << "N=" << N << "start" << endl;
-            double result[2][t]; //存储两个算法在某个图下的结果
+            double result[2][t]; //store results of two algorithms on one graph
             #pragma omp parallel for
-            for(int i = 0; i < t; i++) //循环次数，即一个节点的图的数量
+            for(int i = 0; i < t; i++) //number of iterations, i.e., the number of graphs for one node count
             {
-                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //读图地址
+                string readpath = "./output/graphs/R=" + to_string(R) + "/N=" + to_string(N) + "/net" + to_string(i) + ".txt"; //path to read graph
                 Graph G;
                 G.read(readpath);
-                for(int alg = 0; alg < 2; alg++) //三种算法
+                for(int alg = 0; alg < 2; alg++) //two algorithms
                 {
                     double energy[N];
                     int sum = 0;
                     int z = (int)time(NULL);
-                    srand(z);   
+                    srand(z);
                     for(int j = 0; j < N; j++)
                     {
-                        energy[j] = rand()%50 + 50; //设定初始能量, 在[50, 100]
+                        energy[j] = rand()%50 + 50; //set initial energy in [50, 100]
                     }
                     int size = 0;
-                    int livetime = 0; //生存时间
+                    int livetime = 0; //lifetime
                     vector<int> pre;
                     double diffSum = 0.0;
                     while(1)
@@ -1348,7 +1348,7 @@ void ex7(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
                         size += D.size();
                         for(int j:D)
                         {
-                            energy[j] -= consume(mod); //按不同模式消耗能量
+                            energy[j] -= consume(mod); //consume energy according to different modes
                         }
                         vector<int> diff1 = v_diff(pre, D);
                         vector<int> diff2 = v_diff(D, pre);
@@ -1365,7 +1365,7 @@ void ex7(int Nmin, int Nmax, int t, int R) //t即某种节点数量的图数量
             if(!f) cout << "write error" << endl;
             for(int i = 0; i < t; i++)
             {
-                f << result[0][i] << " " << result[1][i] << endl; //输出结果，一个mode下的一个N占具一个txt
+                f << result[0][i] << " " << result[1][i] << endl; //output results, one txt file for one N under one mode
             }
             f.close();
         }
@@ -1378,29 +1378,29 @@ int main()
     {
         cout << "R" << R << "start" << endl;
 
-        // 确保输出目录存在
+        // Ensure output directories exist
         for(int k = 1; k <= 7; ++k)
             filesystem::create_directories("./output/ex" + to_string(k) + "/");
 
-        // 1) 寿命：均匀能量 100
+        // 1) Lifetime: uniform energy 100
         ex1(10, 100, 100, R);
 
-        // 2) 寿命：初始能量随机 [50,100]
+        // 2) Lifetime: initial energy random [50,100]
         ex2(10, 100, 100, R);
 
-        // 3) 平均 CDS 大小（均匀能量）
+        // 3) Average CDS size (uniform energy)
         ex3(10, 100, 100, R);
 
-        // 4) 平均运行时间/帧（粗粒度计时）
+        // 4) Average runtime/frame (coarse-grained timing)
         ex4(10, 100, 100, R);
 
-        // 5) 能量均衡性：逐帧标准差序列
+        // 5) Energy balance: standard deviation per frame
         ex5(10, 100, 100, R);
 
-        // 6) 平均 CDS 大小（初始能量随机）
+        // 6) Average CDS size (initial energy random)
         ex6(10, 100, 100, R);
 
-        // 7) 邻帧 CDS 成员变动（只跑 Mod-R）
+        // 7) Inter-frame CDS member changes (Mod-R only)
         ex7(10, 60, 50, R);
     }
     cout << "MISSION COMPLETED" << endl;

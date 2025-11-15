@@ -145,48 +145,48 @@ int sim(Graph G, double a)
 
 int main()
 {
-    // 图的类型：0=smaller, 1=equal, 2=greater
+    // Graph types: 0=smaller, 1=equal, 2=greater
     string degree_types[3] = {"smaller", "equal", "greater"};
 
     cout << "====================================================" << endl;
-    cout << "Alpha 扫描实验 - 生成 Figure 3 数据" << endl;
+    cout << "Alpha Scanning Experiment - Generate Figure 3 Data" << endl;
     cout << "====================================================" << endl;
 
-    // N=50 和 N=100
+    // N=50 and N=100
     for(int N = 50; N <= 100; N+=50)
     {
-        cout << "\n处理 N=" << N << "..." << endl;
+        cout << "\nProcessing N=" << N << "..." << endl;
 
-        // 遍历三种度数分档
+        // Iterate through three degree categories
         for(int k = 0; k < 3; k++)
         {
-            cout << "  处理 " << degree_types[k] << " 度数..." << endl;
+            cout << "  Processing " << degree_types[k] << " degree..." << endl;
 
             string graphpath = "./output/graphs/" + degree_types[k] + "/N=" + to_string(N) + "/";
 
             int t = 100;
             double result[11] = {0};
 
-            // 遍历 100 个图样本
+            // Iterate through 100 sample graphs
             for(int i = 0; i < t; i++)
             {
                 string readpath = graphpath + "net" + to_string(i) + ".txt";
 
-                // 检查文件是否存在
+                // Check if file exists
                 ifstream check_file(readpath);
                 if(!check_file.good())
                 {
-                    cerr << "  ⚠ 文件不存在: " << readpath << endl;
+                    cerr << "  ⚠ File not found: " << readpath << endl;
                     continue;
                 }
 
                 Graph G;
                 G.read(readpath);
 
-                // α = 0 (接近 0)
+                // α = 0 (close to 0)
                 result[0] += sim(G, 0.00001);
 
-                // α = 0.1 ~ 1.0 (10个点)
+                // α = 0.1 ~ 1.0 (10 points)
                 int count = 1;
                 for(double a = 0.1; a <= 1.0; a += 0.1)
                 {
@@ -197,7 +197,7 @@ int main()
                 cout << "    ✓ N=" << N << " " << degree_types[k] << " net" << i << endl;
             }
 
-            // 计算平均值并保存结果
+            // Calculate average and save results
             string output_dir = "./output/alpha_scan/" + degree_types[k] + "/";
             filesystem::create_directories(output_dir);
 
@@ -206,11 +206,11 @@ int main()
 
             if(!ofile)
             {
-                cerr << "  ✗ 写入错误: " << result_path << endl;
+                cerr << "  ✗ Write error: " << result_path << endl;
                 continue;
             }
 
-            ofile << "# Alpha 扫描结果 (N=" << N << ", " << degree_types[k] << " 度数)" << endl;
+            ofile << "# Alpha Scanning Results (N=" << N << ", " << degree_types[k] << " degree)" << endl;
             ofile << "# alpha_value  average_lifetime" << endl;
 
             // α = 0
@@ -224,16 +224,16 @@ int main()
             }
 
             ofile.close();
-            cout << "  ✓ 结果保存: " << result_path << endl;
+            cout << "  ✓ Results saved: " << result_path << endl;
         }
 
-        cout << "N=" << N << ": 完成！" << endl;
+        cout << "N=" << N << ": Complete!" << endl;
     }
 
     cout << "\n====================================================" << endl;
-    cout << "✓ Alpha 扫描完成！" << endl;
+    cout << "✓ Alpha Scanning Complete!" << endl;
     cout << "====================================================" << endl;
-    cout << "\n结果保存位置: ./output/alpha_scan/" << endl;
+    cout << "\nResults saved to: ./output/alpha_scan/" << endl;
 
     return 0;
 

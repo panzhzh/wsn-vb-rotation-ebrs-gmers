@@ -49,19 +49,19 @@ cmake-build-*/
 # ==========================================
 # Generated Experiment Output
 # ==========================================
-# 实验生成的结果数据（大量文件，频繁更新）
+# Generated experiment results (large number of files, frequently updated)
 energy/output/
 figures/
 tables/
 
-# 具体排除以下子目录
+# Specifically exclude the following subdirectories
 energy/output/*
 !energy/output/.gitkeep
 
 # ==========================================
 # Generated Graph Files
 # ==========================================
-# 单位圆盘随机几何图生成的文件
+# Unit disk random geometric graph generated files
 *.g
 *.graph
 energy/smaller/
@@ -94,17 +94,17 @@ ENV/
 # ==========================================
 # Data & Analysis Files
 # ==========================================
-# CSV 数据文件（实验输出）
+# CSV data files (experiment output)
 *.csv
 
-# 绘图输出
+# Plot output
 *.png
 *.jpg
 *.jpeg
 *.pdf
 *.svg
 
-# 中间数据文件
+# Intermediate data files
 *.dat
 *.txt
 energy/output/**/*.txt
@@ -131,11 +131,11 @@ Thumbs.db
 # ==========================================
 # Project-Specific Files
 # ==========================================
-# Origin 软件项目文件
+# Origin software project files
 origin/*.opju
 origin/
 
-# 其他临时文件
+# Other temporary files
 *.bak
 *.backup
 *.swp
@@ -144,7 +144,7 @@ origin/
 # ==========================================
 # Research & Documentation (Optional)
 # ==========================================
-# 保留论文和文档，只排除生成的版本
+# Keep research papers and documentation, only exclude generated versions
 *.aux
 *.bbl
 *.blg
@@ -161,7 +161,7 @@ origin/
 # ==========================================
 # Keep Important Files
 # ==========================================
-# 确保以下重要文件不被忽略
+# Ensure the following important files are not ignored
 !energy/README.md
 !energy/run_experiments.sh
 !energy/run_supplement.sh

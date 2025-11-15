@@ -20,6 +20,7 @@ cecs/
 │   │   ├── simulations.cpp      Main experiment executor (Ex1-Ex7)
 │   │   ├── simulations_supplement.cpp  Supplementary experiment executor (4 experiments)
 │   │   └── decideab.cpp         Ex0-Alpha experiment (alpha scanning)
+│   │   └── STGCDP.exe           STG/CDP experiment
 │   │
 │   ├── Execution Scripts
 │   │   ├── run_experiments.sh   One-click run all experiments
